@@ -1,10 +1,10 @@
-# Genome assembly and mapping
-Goal: (1) Create a _Bactrocera dorsalis_ genome assembly from small-insert, paired-end (150 bp) shotgun Illumina sequencing reads. (2) Map reads from a sequenced individual to the assembly.
+# Genome assembly and read mapping
+Goal: (1) Create a _Bactrocera dorsalis_ genome assembly from small-insert, paired-end shotgun Illumina sequencing reads. (2) Map reads from a sequenced _B. dor_ individual to the assembly.
 
 ## Assembly read data
 The sequencing reads are available in the course folder on MCC `/pscratch/jdu282_brazil_bootcamp2023/Bdor_reads`
 
-Instead of copying the files, we are going to make symlinks (symbolic links). Why? To minimize memory use--this way, the course only has one copy of the data instead of everyone in the class downloading the same 10 GB files. 
+Instead of copying the files, we will make symlinks (symbolic links). Why? To minimize memory use--this way, the course only has one copy of the data instead of everyone in the class downloading the same 10 GB files. 
 
 **_Task:_** Make symlinks to the sequencing reads for assembly. <br>
 1. In your home directory on MCC, make a folder named "sequencing_reads".
@@ -93,7 +93,10 @@ singularity run --app busco546 /share/singularity/images/ccs/conda/amd-conda10-r
 
 [Interpreting BUSCO reports](https://busco.ezlab.org/busco_userguide.html#interpreting-the-results)
 
-###  QUAST
+**_Question:_** Why do we want to minimize the number of duplicated BUSCO genes?
+
+
+### QUAST
 
 **_Task:_** Install QUAST.
 1. Run `module load ccs/conda/python`
@@ -138,7 +141,7 @@ Learn more about the data [here](https://www.ncbi.nlm.nih.gov/sra/?term=SRR22045
 ```
 ___
 
-## Read mapping
+### Read mapping
 **_Task:_** Install bwa-mem2.
 1. In your "programs" directory, run ` wget https://github.com/bwa-mem2/bwa-mem2/releases/download/v2.2.1/bwa-mem2-2.2.1_x64-linux.tar.bz2`
 2. Decompress the file `tar -xjvf bwa-mem2-2.2.1_x64-linux.tar.bz2`
