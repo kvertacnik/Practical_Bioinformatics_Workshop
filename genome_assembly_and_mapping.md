@@ -147,17 +147,18 @@ ___
 2. Decompress the file `tar -xjvf bwa-mem2-2.2.1_x64-linux.tar.bz2`
 3. The program `bwa-mem2` is in the folder `bwa-mem2-2.2.1_x64-linux`
 
+First, we will index the reference genome. Briefly, indexing creates a searchable version of the assembly. <br>
 **_Task:_** Index the reference genome assembly.
 1. In your home directory on MCC, make a folder named "mapping".
-2. In your home directory on MCC, make a copy of your batch_header.sh file `cp batch_header.sh bwa2_index.sh` <br>
+2. In your home directory on MCC, make a copy of your batch_header.sh file `cp batch_header.sh bwa2_index.sh`
 3. Move bwa2_index.sh to your mapping folder.
 4. Go into your mapping folder.
 5. Open bwa2_index.sh with nano.
-6. Add the following lines after the header:
+6. Add the following line after the header:
 ```
 /path/to/your/programs/bwa-mem2-2.2.1_x64-linux/bwa-mem2 index /path/to/your/Bdor_ref_assembly/Bdor_ref_scaffolds.fasta
 ```
-7. Submit your job by running `sbatch bwa2_index.sh`. Analysis will take about 2 minutes. <br>
+7. Submit your job by running `sbatch bwa2_index.sh`. Indexing will take about 2 minutes.
 
 **_Task:_** Align the reads from the Bdor sample
 1. In your home directory on MCC, make a copy of your batch_header.sh file `cp batch_header.sh bwa2_mapping.sh` <br>
@@ -170,6 +171,7 @@ ___
 
 singularity run --app samtools113 /share/singularity/images/ccs/ngstools/samtools-1.13+matplotlib-bcftoools-1.13.sinf samtools view -b --threads 32 Bdor_B70_SRR22045853_paired.sam | samtools sort -o Bdor_B70_SRR22045853.bam --output-fmt BAM --threads 32
 ```
-7. Submit your job by running `sbatch bwa2_mapping.sh`. Analysis will take about 10 minutes. <br>
+7. Submit your job by running `sbatch bwa2_mapping.sh`. Analysis will take about 10 minutes. `Bdor_B70_SRR22045853.bam` is the file with your mapped reads. 
 
-`Bdor_B70_SRR22045853.bam` is the file with your mapped reads. 
+The actual read mapping was performed with `bwa-mem2 mem`. So why did we also run samtools? The output of `bwa-mem2 mem` is in SAM format, a human-readable, text-based format. It is computationally faster, however, to use BAM format, which is the same data as SAM but in binary format. Try comparing `head -n 3 Bdor_B70_SRR22045853_paired.sam` and `head -n 3 Bdor_B70_SRR22045853_paired.bam`
+
