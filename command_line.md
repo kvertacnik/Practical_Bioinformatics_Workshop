@@ -25,7 +25,7 @@ Instead of typing the full name, paths can be auto-filled using the tab key. For
 
 **_Question:_** Based on the above figure, why would `~/D` `tab` fail to auto-fill?
 
-NB: Command line has a hard time understanding whitespace in file or directory names. For example, is `my file.txt` one file or two files named "my" and "file.txt"? Best practice is to never have whitespace in names. "my file.text" should be "my_file.text", "my-file.txt", "myFile.txt", etc. Also, do not include any symbols except for "-" or "_".
+NB: Command line has a hard time understanding whitespace in file or directory names. For example, is `my file.txt` one file or two files named "my" and "file.txt"? Best practice is to never have whitespace in names. "my file.text" should be "my_file.text", "my-file.txt", "myFile.txt", etc. Also, do not include any symbols except for `-` or `_` or `.`
 
 ### Basic commands
 
@@ -62,7 +62,7 @@ Multiple plain text editors are available. We will use `nano`.
 3. Save the file `control+o` and use the file name "hello.txt". <br>
 4. Exit nano `control+x`
 
-We can also make a new, empty file from the command line using `touch new_file_name`
+We can also make a new, empty file from the command line using `touch new_file_name`, however, the file still needs to be opened in nano for editing.
 
 Did you catch the three ways to make a new file?
 * `touch new_file_name`
@@ -74,7 +74,7 @@ NB: File extensions are very important for understanding file contents. For exam
 ___
 
 ## Editing and viewing files from the command line
-Files can be edited without opening a text editor. These command line tools have many options; we'll look at the basics.
+Files can be edited without opening a text editor. These command line tools have many options; we'll look at some basic uses.
 
 NB: By default, the output of these commands prints to screen. If you want to save the output to a file, redirect the output by adding `> new_file_name` to the end of the command. For example, `grep "search_word" file.txt' > grep_output.txt` will redirect the `grep` output to `grep_output.txt` instead of printing to screen.
 
@@ -120,11 +120,11 @@ One common reason to use `awk` is when you want to access data in columns. Colum
 **_Task:_** Print column 2 of log.txt by running `awk '{print $2}' log.txt`
 
 ### Viewing files
-`cat` prints the entire file to screen
+`cat` prints the entire file to screen. If the file is very large, cancel with `control + c`
 
-`head -n <number> file_name` displays the first `<number>` lines of the file
+`head -n <number> file_name` displays the first <number> lines of the file
 
-`tail -n <number> file_name` displays the last `<number>` lines of the file
+`tail -n <number> file_name` displays the last <number> lines of the file
 
 **_Task:_** Get the first two lines of log.txt.
 ___
@@ -156,4 +156,4 @@ INFO
 
 A couple things to note:
 * Since we are reading our search terms from a file, `for item in [LIST]` is replaced by `while read item`
-* To input our search file, `< search.txt` is added to the end of the loop.
+* To input our search file, `< search.txt` is added to the loop command.
