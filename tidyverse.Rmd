@@ -1,0 +1,140 @@
+---
+title: "R tidyverse basics"
+output: html_notebook
+---
+
+The Tidyverse is “an opinionated collection of R packages designed for data science. All packages share an underlying design philosophy, grammar, and data structures.”
+
+```{r}
+library(tidyverse)
+setwd("/path/to/your/working/directory")
+```
+
+
+### TIDY DATA ###
+Key to the Tidyverse system is the tidy data format, where:
+
+* Each variable must have its own column.
+* Each observation must have its own row.
+* Each value must have its own cell.
+
+Let's read in some data.
+```{r}
+eagle_nest_data <- data.frame(
+  "region" = c("Pacific", "Southwest", "Rockies"),
+  "2007" = c(1039, 51, 200),
+  "2009" = c(2587, 176, 338),
+  check.names=FALSE
+)
+
+print(eagle_nest_data)
+```
+The variables in this dataset are region, year, and nests.
+
+* Region is tidy because all of the data is in a single column. 
+* Year is not tidy because the values (2007, 2009) are in two different columns.
+* Nests is not tidy because the values are stored as values of 2007 and 2009.
+
+Now we'll make the data tidy with the pivot_longer( ) function.
+```{r}
+eagle_nest_data %>%           # %>% (magrittr) is a pipe (forwards a value into an expression or function).
+  pivot_longer(
+    cols = c(`2007`, `2009`), # Reorganize so that 2007 and 2009 are in a single column.
+    names_to = "year",        # Rename that column "year".
+    values_to = "num_nests"   # 2007 and 2009 nest values are in a new "num_nests" column.
+  )
+```
+Now each variable has a column and each data point has its own row.
+
+For a more thorough explanation see https://dcl-wrangle.stanford.edu/pivot-basic.html
+
+
+### IMPORTING DATA ###
+We will use the read_csv( ) function from the readr package to upload global tuberculosis data as a dataframe. Learn more about the data here: https://tidyr.tidyverse.org/reference/who.html
+```{r}
+TBdata <- read_csv("/path/to/TBdata_tidy.csv")
+```
+
+### GROUPING DATA ###
+The package dplyr allows you to group data by variable(s). 
+
+To get an idea of the data, let's look at the first 6 rows. <br>
+Age values are a range (eg., 3544 = ages 35 to 44). <br>
+Var refers to the method of diagnosis (rel = relapse, sn = negative pulmonary smear, sp = positive pulmonary smear, ep = extrapulmonary).
+```{r}
+head(TBdata)
+```
+
+To simplify analysis, let's pull out the data for one country.
+```{r}
+brazilTB <- filter(TBdata, grepl('Brazil', TBdata$country))
+```
+
+The data can be grouped by any variable(s).
+```{r}
+# Group by 1 variable
+brazilTB_by_sex <- brazilTB %>% group_by(sex)
+
+# Group by multiple variables
+brazilTB_by_sex_var <- brazilTB %>% group_by(sex, var)
+```
+
+Let's count the number of rows (i.e., data points) in each group.
+```{r}
+brazilTB_by_sex %>% tally()
+```
+
+Or sort the number of rows from largest to smallest.
+```{r}
+brazilTB_by_sex_var %>% tally(sort=TRUE)
+```
+
+We can get a group's basic statistics with the summarize( ) function.
+```{r}
+brazilTB_by_sex_var %>% summarize(mean_cases = mean(cases),  max_cases=max(cases))
+```
+
+
+### VISUALIZING DATA ###
+The Tidyverse package for visualizing data is ggplot2.
+
+Let's load the gapminder data set, which is a global database of various metrics.
+```{r}
+if(!require(gapminder)) {install.packages("gapminder"); library(gapminder)}
+```
+
+What are the variables of this version of the gapminder data?
+```{r}
+str(gapminder)
+```
+Plot (graph) GDP over time. Each point represents a country.
+```{r}
+ggplot(data = gapminder, aes(x = year, y = gdpPercap)) + 
+    geom_point()
+```
+
+We can also combine plots.
+```{r}
+ggplot(gapminder, aes(x = year, y = lifeExp, group = country)) +
+  geom_line(aes(color = continent)) +
+  geom_point(aes(size = gdpPercap))
+```
+
+We can subset the data and plot each subset separately with facets.
+```{r}
+ggplot(gapminder, aes(x = year, y = lifeExp, group = country)) +
+  geom_line(aes(color = continent)) +
+  facet_grid(~ continent)
+```
+
+Finally, let's change the axis labels to make the plot more readable.
+```{r}
+ggplot(gapminder, aes(x = year, y = lifeExp, group = country)) +
+  geom_line(aes(color = continent)) +
+  facet_grid(~ continent) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  ylab("Life Expectancy") +
+  xlab("Year") +
+  theme(legend.title=element_blank())
+
+```
