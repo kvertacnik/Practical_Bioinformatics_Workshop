@@ -142,7 +142,7 @@ eagle_nest_data <- data.frame(
 print(eagle_nest_data)
 ```
 
-![Untidy data](assets/eagle_untidy.png)
+![Untidy data](assets/tidyverse/eagle_untidy.png)
 
 The variables in this dataset are region, year, and nests.
 
@@ -166,9 +166,9 @@ eagle_nest_data %>%             # Step 1
 * Step 3: Make a new column that will store the names of the selected columns.
 * Step 4: Make a new column for the values of the selected columns.
 
-![Methods](assets/eagle_methods.png)
+![Methods](assets/tidyverse/eagle_methods.png)
 
-![Tidy data](assets/eagle_tidy.png)
+![Tidy data](assets/tidyverse/eagle_tidy.png)
 
 The table now has more rows but each variable (region, year, nests) has a column and each data point has its own row. 
 
