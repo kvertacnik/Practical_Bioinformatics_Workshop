@@ -10,7 +10,7 @@ R is a "programming environment for statistics and graphics". One of its strengt
 
 We'll be working in RStudio, an integrated development environment (IDE) that among other things, has places to write and run code.
 <p align="left">
-  <img src="./assets/tidyverse/Rstudio.png" width="100%">
+  <img src="/assets/tidyverse/Rstudio.png" width="100%">
 </p>
 
 
