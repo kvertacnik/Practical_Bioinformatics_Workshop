@@ -14,7 +14,7 @@ ___
 
 Computer files are organized in a series of nested, hierarchical directories (folders) starting with the root directory. Each user has their own home directory where their files are stored. To distinguish files from directories, directory names end in `/` while file names do not.
 
-NB: "Folder" and "directory" are synonymous and are used interchangeably.
+NB: "Folder" and "directory" are synonymous terms that are used interchangeably.
 
 ### Paths
 Each directory and file has a "path". Think of it as an address within the hierarchical structure. Paths start at root and go down each level until it reaches the directory or file. For example, the path to user1's desktop directory is `/home/user1/Desktop/`
@@ -64,18 +64,17 @@ NB: Command line saves a history of executed commands. Use the up arrow to go th
 ___
 
 ## Make and edit a new text file
-Most bioinformatics analysis programs cannot read files that are written in familiar programs such as Word, Notepad, Excel, etc. 
+Most bioinformatics analysis programs cannot read files that are written in familiar programs such as Word and Excel. 
 
 What happens when we try to look at an Excel file?
 ![Excel example](assets/command_line/head_excel.png)
 
-The solution is to use a plain text editor. Multiple text editors are available. We will use `nano`.
+Instead, we will write files in plain text. Multiple text editors are built into the command line. We will use `nano`.
 
 **_Task:_** Go into your ~/Desktop/examples directory. <br>
 1. Open the text editor by running `nano` or `nano hello.txt` <br>
 2. Type `Hello World!`<br>
-3. Save the file `control+o` and use the file name "hello.txt". <br>
-4. Exit nano `control+x`
+3. Exit nano `control+x`. It will ask you to "Save modified buffer". Type "Y" and use the file name "hello.txt". <br>
 
 We can also make a new, empty file from the command line using `touch new_file_name`
 
