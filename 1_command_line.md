@@ -14,6 +14,7 @@ To run a command, type the command at the prompt and then press enter. Try this 
 <p align="left">
   <img src="assets/command_line/prompt.png" width="25%">
 </p>
+
 ___
 
 ## Directory navigation
@@ -59,7 +60,7 @@ ___
 
 `rm` = "remove", with the usage `rm file_name`. Note that command line does not have an "undo" function so **_deletions are permanent_**.
 
-`cat` = "concatentate". It combines multiple files `cat file1 file2 > file1and2` and can print the contents of a file to the screen `cat file_name`
+`cat` = "concatenate". It combines multiple files `cat file1 file2 > file1and2` and can print the contents of a file to the screen `cat file_name`
 
 `head -n <number> file_name` displays the first `<number>` lines of the file
 
@@ -99,20 +100,19 @@ Did you catch the three ways to make a new file?
 * `nano new_file_name`
 
 NB: File extensions are important for understanding file contents. For example, a file named "sample1" could be anything, e.g., a text file with metadata or a fastq file with sequence reads. Naming the file sample1.txt or sample1.fq avoids this problem.
-
 ___
 
-## Editing and viewing files
-Files can be edited without opening them. These command line tools have many options; we'll look at the basics.
-
-NB: By default, the output of these commands prints to the screen. If you want to save the output to a file, redirect the output by adding `> new_file_name` to the end of the command.
+## Redirect output
+By default, the output of these commands prints to the screen. If you want to save the output to a file, redirect the output by adding `> new_file_name` to the end of the command.
 
 **_Task:_** Redirect a command output.
 1. In your "examples" folder run `ls`
-2. Then try `ls > output.txt` A new file should appear named `output.txt`
+2. Then run `ls > output.txt`. Nothing should print to the screen but a new file should appear named `output.txt`
 3. Does the output of `ls` match the contents of `output.txt`?
+___
 
-Now we will create a data file and use command line tools to extract information or manipulate the file **without opening the file**.
+## Editing and viewing files
+We will create a data file and use command line tools to extract information or manipulate the file **without opening the file**. These tools have many options; we'll look at the basics. 
 
 **_Task:_** Create a data file.
 1. In your "examples" directory make a new text file named `log.txt`
@@ -129,6 +129,15 @@ Timestamp       Category        Message
 1598863901      ERROR   Requested resource not found
 1598864411      INFO    User admin logged out
 ```
+
+### How many lines?
+`wc` (short for word count) is useful for counting characters/lines/words. You can use it as follows:
+```
+wc -l log.txt
+wc -c log.txt
+wc -w log.txt
+```
+**_Question:_** Can you figure out what each of these options do? 
 
 ### Find text with `grep`
 `grep` searches every line in the file for word(s) that you provide. If a line has matching text, grep will print that line to the screen; grep only searches for text and cannot make edits.
@@ -177,17 +186,20 @@ In Bash, the for loop format is:
 
 ```for item in [LIST]; do [COMMANDS] $item; done```
 
-**_Task:_** In log.txt, replace the words "INFO" and "ERROR" with the word "okay" by running <br>
+**_Task:_** For loop from a list. <br>
+In log.txt, replace the all occurrences of the words "INFO" and "ERROR" with the word "okay" by running <br>
 `for item in ERROR INFO; do sed "s/${item}/okay/g" log.txt; done`
 
 A few things to note:
 * The words in the list "ERROR INFO" are separated by spaces, not commas.
 * "item" is a variable that changes meaning from "ERROR" to "INFO". Because of this special property, in the "do" part of the loop "item" is written as `${item}`
 * Because of the `${item}` variable, `s/${item}/okay/g` is in double quotes instead of single quotes.
+* The variable can be any word; it is very common for people to use `f`
 
-[LIST] can also be a file where each line in the file is a different item. The for loop processes each line until it reaches the end of the file.
+**_Task:_** For loop from a list in a file. <br>
+[LIST] can also be a file where each line is a different item. The for loop reads each line one at a time and runs the same commands on every item in the list.
 
-**_Task:_**  In log.txt, replace the words "INFO" and "ERROR" with the word "okay", but this time "INFO" and "ERROR" will be read from a file.
+In log.txt, replace the words "INFO" and "ERROR" with the word "okay", but this time "INFO" and "ERROR" will be read from a file.
 
 1. In nano, make a new text file named "search.txt" and list "INFO" and "ERROR" in a column like this:
 ```
@@ -195,5 +207,10 @@ ERROR
 INFO
 ```
 2. Save and close nano. Then run: <br>
-`for item in 'cat search.txt'; do sed "s/${item}/okay/g" log.txt; done`
+``for item in `cat search.txt` ; do sed "s/${item}/okay/g" log.txt; done``
 3. Check the file to see if the find and replace was successful.
+
+A few things to note:
+* By using the backtick character `` ` `` we can call a command within another command. 
+* The backtick `` ` `` is not the same as the single quote `'`. On a keyboard, the backtick is usually to the left of the "1" key while the single quote is over on the right side of the keyboard next to the "enter" key; make sure not to mix those up! 
+* For the genotyping pipeline we will do many of this type of for loop.

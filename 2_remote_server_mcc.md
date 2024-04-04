@@ -7,10 +7,8 @@
 
 On your computer run `ssh user_name@mcc-dtn.ccs.uky.edu` 
 
-The first time you connect to the cluster, you will get a message like this:
+The first time you connect to the cluster, you will get a message like this; type `yes` to continue.
 ![Host authentication message](assets/command_line/host_authentication.png)
-
-Type `yes` to continue.
 
 After successfully logging in, the command line prompt will change to show that. It should look something like this `[user_name@mcc-login001 ~]$`
 
@@ -27,7 +25,7 @@ ___
 2. View the contents of the class directory with `ls`
 
 3. Go into the "students" folder and make a new directory <br>
- `cd students`  <br>
+ `cd students` <br>
  `mkdir your_name`
 
 4. Run `ls` again. You should see a folder with your name. How do we know it’s a folder? The name is color-coded in blue.
@@ -62,11 +60,11 @@ ___
 ## Modules
 Some programs are already installed on MCC, however, they need to be activated in order to work.
 
-`module list` lists the activated programs onto your account.
+`module list` lists the activated programs on your account.
 
 `module avail` lists the programs installed on the cluster. Use `module avail | grep "program_name"` to search for a specific program (note that most module names are in lowercase).
 
-`module load module_name` activates the program
+`module load module_name` activates the program for your current session
 
 `module unload module name` deactivates/removes the program from your account
 
@@ -128,6 +126,8 @@ Each job gets a job number and a corresponding `slurm-job_number.out` file. This
 
 To cancel a submitted job use `scancel job_number` (get the job number from `squeue | grep mcc_user_name`)
 
+See [here](https://ukyrcd.atlassian.net/wiki/spaces/UKYHPCDocs/pages/72418017/Submitting+jobs+on+MCC+for+first-time+users) for additional information.
+
 NB: All data analysis should be submitted as a job. **Do not run jobs on the login node.**
 
 ___
@@ -137,7 +137,7 @@ SNP calling from whole-genome (shotgun) sequence data requires a reference genom
 
 We're going to use Bactrocera dorsalis (oriental fruit fly) whole-genome sequence data from [this paper](https://onlinelibrary.wiley.com/doi/full/10.1111/eva.13507).
 
-### **_Task:_** download the _Bactrocera dorsalis_ reference genome from NCBI
+### **_Task:_** Download the _Bactrocera dorsalis_ reference genome from NCBI
 We will download the latest Bactrocera dorsalis (oriental fruit fly) reference genome from NCBI (National Center for Biotechnology Information (USA)).
 
 1. Search for "Bactrocera dorsalis" on https://www.ncbi.nlm.nih.gov/
@@ -164,32 +164,43 @@ We will download the latest Bactrocera dorsalis (oriental fruit fly) reference g
 
 ___
 
-### **_Task:_** get a copy of the individual sequencing read files (and submit your first cluster job!)
-We will need to download shotgun reads for multiple individuals, which is a repetitive task (and the perfect opportunity to use a for loop).
+### **_Task:_** Get sequencing read files (and submit your first cluster job!)
+Our data is from this [BioProject](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA893460/). We need to download shotgun reads for multiple individuals, which is a repetitive task (and the perfect opportunity to use a for loop).
 
-Our data is from this [BioProject](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA893460/), which has 237 individuals of shotgun data for _B. dorsalis_.
+A list of the SRA accessions is at `/pscratch/jdu282_brazil_bootcamp2023/data/Bdor_WGS_SRA_list.txt`
 
-I've made a full list of the SRR accessions here: /pscratch/jdu282_brazil_bootcamp2023/data/Bdor_WGS_SRA_list.txt. You were all assigned a set of samples, to get the SRR accessions run <br>
-`sed -n '<lower_number>,<upper_number>' /pscratch/jdu282_brazil_bootcamp2023/data/Bdor_WGS_SRA_list.txt`
+You were all assigned a set of four samples, to get a file with the accession values run <br>
+`sed -n '<lower_number>,<upper_number>' /pscratch/jdu282_brazil_bootcamp2023/data/Bdor_WGS_SRA_list.txt > SRA_accessions.txt`
 
-Make a text file the lists your four SRR accessions.
-1. Open the text editor by running `nano SRR_accessions.txt`
-2. Enter your SRR accessions as a list
-3. Save and exit nano `control+x`
+To download from NCBI, we're going to need to use the program SRAtoolkit which is available [here](https://github.com/ncbi/sra-tools/wiki/01.-Downloading-SRA-Toolkit). I  already got a copy for us to use.
 
-To download from NCBI, we're going to need to use SRAtoolkit which is available [here](https://github.com/ncbi/sra-tools/wiki/01.-Downloading-SRA-Toolkit). It's already installed on the cluster so we'll use that version.
+Make a copy of your batch script template `cp batch_header.sh SRA_download.sh`
 
-Make a copy of your batch script template <br>
-`cp batch_header.sh SRR_download.sh`
-
-Then open SRR_download.sh and add these lines to the file
+Open SRA_download.sh and add the following after the header:
 ```
-container=/share/singularity/images/ccs/conda/amd-conda1-centos8.sinf
-singularity run --app sratools2110 $container prefetch 
-
-for f in `cat SRR_accessions.txt`; do singularity run --app sratools2110 $container prefetch $f.sra; done
-
-for f in `cat [list of SRR accessions]`; do singularity run --app sratools2110 $container fastq-dump --outdir fastq --gzip --skip-technical  --readids --read-filter pass --dumpbase --split-3 --clip $f/$f.sra; done
+for f in `cat SRA_accessions.txt`; do /scratch/kdu224/iceland_workshop/programs/sratoolkit.3.1.0-ubuntu64/bin/prefetch $f; /scratch/kdu224/iceland_workshop/programs/sratoolkit.3.1.0-ubuntu64/bin/fasterq-dump --outdir fastq --skip-technical --threads 32 $f/$f.sra; rm -rf $f; done
 ```
 
-Then submit your job `sbatch SRR_download.sh`. Assuming it starts right away, this should take about 40 minutes.
+Then submit your job `sbatch SRA_download.sh`. Assuming it starts right away, this should take about 10 minutes and you should have a new folder named "fastq".
+
+___
+
+### **_Task:_** Subsample sequencing read files
+The sequence files have ~20-30 million reads. To speed up analysis time, let's subsample them down to 1 million reads. This way, we'll have enough time for the entire genotyping pipeline, but it will obviously affect the final SNP dataset that we obtain at the end.
+
+Make and submit a batch script named SRA_subsample.sh with these commands. Also change `#SBATCH --ntasks=32` to `#SBATCH --ntasks=1`
+
+```
+mv SRA_accessions.txt fastq
+cd fastq
+
+for f in `cat SRA_accessions.txt`; do head -n 4000000 "$f"_1.fastq > "$f"_1Mreads_R1.fastq; head -n 4000000 "$f"_2.fastq > "$f"_1Mreads_R2.fastq; done
+
+rm *_1.fastq
+rm *_2.fastq
+```
+
+**_Question:_** Can you follow what's going on in this job? Why did we move SRA_accessions.txt? Why are we getting 4000000 lines per file? And what does the `>` do?
+
+
+### Symlinks to frequently used files
