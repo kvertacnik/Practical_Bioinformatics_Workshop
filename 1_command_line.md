@@ -214,3 +214,7 @@ A few things to note:
 * By using the backtick character `` ` `` we can call a command within another command. 
 * The backtick `` ` `` is not the same as the single quote `'`. On a keyboard, the backtick is usually to the left of the "1" key while the single quote is over on the right side of the keyboard next to the "enter" key; make sure not to mix those up! 
 * For the genotyping pipeline we will do many of this type of for loop.
+
+**_Question:_** The command `echo` prints to the screen whatever follows the command. A pipe `|` takes the output of the command on the left and passes it to the command on the right. What does this for loop do?
+
+``for f in `cat search.txt`; do echo $f | wc -c; done``
