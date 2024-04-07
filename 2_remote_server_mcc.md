@@ -30,11 +30,16 @@ ___
 
 4. Run `ls` again. You should see a folder with your name. How do we know it’s a folder? The name is color-coded in blue.
 
+What do all the colors mean? Here are some of the more common ones.
+<p align="left">
+  <img src="assets/command_line/terminal_colors.png" width="25%">
+</p>
+
 ___
 
 ## Transferring files 
 
-### Copy files from your computer to the cluster
+### Copy files from your local computer to the cluster
 Your current working directory and local_file needs to be on your local computer.
 
 If local_file is in your current working directory: <br>
@@ -43,37 +48,26 @@ If local_file is in your current working directory: <br>
 If local_file is in another directory: <br>
 `scp /path/to/local_file user_name@server_address:/path/to/cluster/directory`
 
-### Copy files from the cluster to your computer
-Again, run the command from your local computer.
+### Copy files from the cluster to your local computer
+Again, the current working directory must be on your local computer.
 
 `scp user_name@server_address:/path/to/cluster/remote_file /path/to/local/directory`<br>
 
-If the destination is the current working directory, the full path to the current working directory can be replaced with `.` <br>
+If the destination is the local current working directory, the full path to the current working directory can be replaced with `.` <br>
 `scp user_name@server_address:/path/to/cluster/file.txt .`
 
-**_Question:_** How do you modify the `scp` command to copy a directory?
+**_Question:_** How do you modify the `scp` command to transfer a directory?
 
 **_Task:_** Copy the `hello.txt` file you made previously from your computer to your folder on the cluster. Then delete the file from the cluster.
 
-___
+### Another way to transfer files
+Like ssh, the command `sftp` moves files but is more interactive in that you enter a special shell within the current shell. 
 
-## Modules
-Some programs are already installed on MCC, however, they need to be activated in order to work.
+Let's say you're on your local machine in a directory with a file you want to transfer. Run `sftp user_name@server_address` and enter your password. Once you hit enter, you will be in your home directory _on the cluster_ and the prompt changes to `sftp>`. Now you can move around your directory structure on the cluster (i.e., use `cd`, `ls`, etc.) and navigate to you want to put the file. 
 
-`module list` lists the activated programs on your account.
+Then run `put local_file` to transfer the file from your local machine to the cluster. Likewise, to get a file off the cluster run `get remote_file` and it will transfer the file from the cluster to your local machine. Run `exit` to quit sftp.
 
-`module avail` lists the programs installed on the cluster. Use `module avail | grep "program_name"` to search for a specific program (note that most module names are in lowercase).
-
-`module load module_name` activates the program for your current session
-
-`module unload module name` deactivates/removes the program from your account
-
-___
-
-## Singularities
-These are like modules except that instead of loading them, the program name is called when you submit a job to the cluster.
-
-The full list of singularity programs is [here](https://ukyrcd.atlassian.net/wiki/spaces/UKYHPCDocs/pages/72417975/Software+list+for+singularity+containers+for+conda+packages+in+the+MCC+cluster)
+**_Task:_** Using sftp, copy the `log.txt` file you made previously from your computer to your folder on the cluster. Then delete the file from the cluster. Make sure you're in the folder that has log.txt when you start sftp.
 
 ___
 
@@ -94,6 +88,8 @@ Optional
 #SBATCH --mail-type=ALL     # Notify when job starts/ends/fails
 #SBATCH --mail-user=        # Your email address
 ```
+
+NB: A hash character followed by a space `# ` means "do not execute anything on this line after this symbol". It's a way to leave comments that won't interfere with the code.
 
 To see what types of processors are available run `sinfo`
 <p align="left">
@@ -118,7 +114,7 @@ NB: Notification emails often end up in spam/junk folders.
 
 To submit a job run `sbatch your_batch_script.sh`
 
-Once you submit a job, you can check its status with `squeue | grep mcc_user_name`. If all processors are in use, your job will wait until resources are available; `TIME 0:00` means your job has not started.
+Once you submit a job, you can check its status with `squeue | grep "mcc_user_name"`. If all processors are in use, your job will wait until resources are available; `TIME 0:00` means your job has not started.
 
 ![squeue example](assets/command_line/squeue.png)
 
@@ -130,6 +126,81 @@ See [here](https://ukyrcd.atlassian.net/wiki/spaces/UKYHPCDocs/pages/72418017/Su
 
 NB: All data analysis should be submitted as a job. **Do not run jobs on the login node.**
 
+___
+
+## Run a job
+Now let's create a job file and submit an actual command that we can watch. Create a new file named counting.sh, and paste the following into it:
+
+```
+#!/bin/bash
+#SBATCH --partition=normal
+#SBATCH --time 20:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --account=coa_jdu282_brazil_bootcamp2023
+#SBATCH --mail-type ALL
+#SBATCH --mail-user <your email address>
+
+echo "starting"
+sleep 10
+echo "it's been 10 seconds"
+sleep 20
+echo "it's been 30 seconds"
+sleep 30 
+echo "it's been 60 seconds. Exciting!"
+sleep 5
+echo "it's been 65 seconds. Amazing."
+sleep 6
+echo "it's been 71 seconds. What are we deviating from 5 second intervals???"
+```
+
+Save the file, and then use `cat` to check that the job submission file looks correct.
+
+Submit the job using the following command: `sbatch counting.sh`
+
+Once you have the job submitted, check that it's running by using `squeue`. Lots of stuff, right? That output is a list of all the jobs that are currently running on the cluster. We can subset that in two ways. First, we could just grep our username:
+```
+squeue | grep "mcc_user_name"
+```
+
+Or you can use an option in squeue:
+```
+squeue -u "mcc_user_name"
+```
+
+Let's check on the status of the job. Standard out (stdout) for computers is the normal output of a command/execution. Standard error (stderr) is any error messages that arise from a command/execution. The default location for stdout when MCC is running a job is in a file called `slurm-jobID.out`. 
+
+So let's see what's in the slurm file. It should be in the same directory as the batch script. Try using `cat` to see what's in that file. How long ago did you submit that file? Can you piece it together based on what's in the output file?
+
+Another way to interact with the stdout from a job is to write that output to another file. Take the `counting.sh` file and at the end of each "echo" line, add the following `>> counting_output.txt`. Resubmit the job, and now see if you can follow the status of the job in real time using `cat` and the `counting_output` file.
+
+You should have emails in your inbox that document when these jobs started and ended. The exit code is important in this email, as it lets you know if the job finished with no issues (exit code 0) or with an error or other issue. See [here](https://hpc-discourse.usc.edu/t/exit-codes-and-their-meanings/414) for more info on exit codes. They can be very useful when troubleshooting errors!
+
+___
+
+## Modules
+Some programs are already installed on MCC, however, they need to be activated in order to work.
+
+`module list` lists the activated programs on your account.
+
+`module avail` lists the programs installed on the cluster. Use `module avail | grep "program_name"` to search for a specific program (note that most module names are in lowercase).
+
+`module load module_name` activates the program for your current session
+
+`module unload module name` deactivates/removes the program from your account
+
+___
+
+## Singularities
+The full list of singularity programs is [here](https://ukyrcd.atlassian.net/wiki/spaces/UKYHPCDocs/pages/72417975/Software+list+for+singularity+containers+for+conda+packages+in+the+MCC+cluster). <br>
+If the link fails, go to the left sidebar UKY RCD Docs --> Morgan Compute Cluster (MCC) --> Software list for singularity containers
+
+These are like modules except that instead of loading them, the singularity information is added to the batch script.
+
+```
+container=/from/container_name_and_location/column
+singularity run --app app_name_from_the_second_column $container program_command
+```
 ___
 
 ## Getting data for read mapping and SNP calling with GATK
@@ -154,7 +225,7 @@ We will download the latest Bactrocera dorsalis (oriental fruit fly) reference g
 
 4. Right-click and copy the link for `GCF_023373825.1_ASM2337382v1_genomic.fna.gz`
 
-5. In your folder on MCC type `wget` and then paste the link:
+5. In your folder on MCC type `wget` and then paste the link. <br>
 `wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/023/373/825/GCF_023373825.1_ASM2337382v1/GCF_023373825.1_ASM2337382v1_genomic.fna.gz`
 
 6. After downloading, your folder should look something like this:
@@ -191,7 +262,7 @@ The sequence files have ~20-30 million reads. To speed up analysis time, let's s
 Make and submit a batch script named SRA_subsample.sh with these commands. Also change `#SBATCH --ntasks=32` to `#SBATCH --ntasks=1`
 
 ```
-mv SRA_accessions.txt fastq
+cp SRA_accessions.txt fastq
 cd fastq
 
 for f in `cat SRA_accessions.txt`; do head -n 4000000 "$f"_1.fastq > "$f"_1Mreads_R1.fastq; head -n 4000000 "$f"_2.fastq > "$f"_1Mreads_R2.fastq; done
@@ -200,7 +271,7 @@ rm *_1.fastq
 rm *_2.fastq
 ```
 
-**_Question:_** Can you follow what's going on in this job? Why did we move SRA_accessions.txt? Why are we getting 4000000 lines per file? And what does the `>` do?
+**_Question:_** Can you follow what's going on in this job? Why did we put a copy of SRA_accessions.txt in the fastq folder? Why are we getting 4000000 lines per file? And what does the `>` do?
 
 
 ### Symlinks to frequently used files

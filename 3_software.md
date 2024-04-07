@@ -89,6 +89,13 @@ To exit the environment run `conda deactivate`
 
 ___
 
+## Getting help with `-h`
+
+
+
+
+___
+
 ## Installing programs and setting up the environment for read mapping and SNP calling with GATK
 Do all these installations on the cluster.
 
