@@ -40,7 +40,7 @@ ___
 ## Transferring files 
 
 ### Copy files from your local computer to the cluster
-Your current working directory and local_file needs to be on your local computer.
+Your current working directory and local_file must be on your local computer.
 
 If local_file is in your current working directory: <br>
 `scp local_file user_name@server_address:/path/to/cluster/directory`
@@ -53,12 +53,22 @@ Again, the current working directory must be on your local computer.
 
 `scp user_name@server_address:/path/to/cluster/remote_file /path/to/local/directory`<br>
 
-If the destination is the local current working directory, the full path to the current working directory can be replaced with `.` <br>
+If the destination is the local current working directory, `/path/to/local/directory` can be replaced with `.` <br>
 `scp user_name@server_address:/path/to/cluster/file.txt .`
 
 **_Question:_** How do you modify the `scp` command to transfer a directory?
 
-**_Task:_** Copy the `hello.txt` file you made previously from your computer to your folder on the cluster. Then delete the file from the cluster.
+<details>
+<summary>Answer</summary> 
+
+`scp -r`
+
+</details>
+
+<br>
+
+**_Task:_** Earlier you made a file named `hello.txt` (in your "examples" folder).
+Copy that file from your computer to your folder on the cluster. Then delete the file from the cluster.
 
 ### Another way to transfer files
 Like ssh, the command `sftp` moves files but is more interactive in that you enter a special shell within the current shell. 
@@ -71,10 +81,10 @@ Then run `put local_file` to transfer the file from your local machine to the cl
 
 ___
 
-## Slurm job submission & batch scripts
-MCC uses Slurm (Simple Linux Utility for Resource Management) to manage user demand and system resources. When you submit a job, what you're doing is requesting the use of computer processors (nodes). 
+## Slurm job submission
+MCC uses Slurm (Simple Linux Utility for Resource Management) to manage user demand and system resources. It is a job scheduling system where users submit their commands ("jobs") as job scripts (also known as batch scripts). When you submit a job, what you're doing is requesting the use of computer processors (nodes). 
 
-Commands, or "jobs", are submitted with batch scripts. Batch script files must end in `.sh` and must start with the following lines:
+Job script files must end in `.sh` and must start with the following lines:
 
 ```
 #!/bin/bash
@@ -100,7 +110,7 @@ The format for --time= is day-hour:minute:second, e.g., 00-01:00:00 means 1 hour
 
 NB: Notification emails often end up in spam/junk folders.
 
-**_Task:_** In your folder on MCC, make a new file named "batch_header.sh" and add the following lines. We will use this file as a template for job submission.
+**_Task:_** In your folder on MCC, make a new file named "job_header.sh" and add the following lines. We will use this file as a template for job submission.
 ```
 #!/bin/bash
 #SBATCH --partition=normal
@@ -112,29 +122,31 @@ NB: Notification emails often end up in spam/junk folders.
 #SBATCH --mail-user <your email address>
 ```
 
-To submit a job run `sbatch your_batch_script.sh`
+To submit a job run `sbatch your_job_script.sh`
 
 Once you submit a job, you can check its status with `squeue | grep "mcc_user_name"`. If all processors are in use, your job will wait until resources are available; `TIME 0:00` means your job has not started.
 
 ![squeue example](assets/command_line/squeue.png)
 
-Each job gets a job number and a corresponding `slurm-job_number.out` file. This file has the information that is normally printed to the screen as the program is running. 
+Each job gets a job number and a corresponding `slurm-job_number.out` file. This file has the information that is normally printed to the screen as the program is running (stdout). 
 
 To cancel a submitted job use `scancel job_number` (get the job number from `squeue | grep mcc_user_name`)
 
-See [here](https://ukyrcd.atlassian.net/wiki/spaces/UKYHPCDocs/pages/72418017/Submitting+jobs+on+MCC+for+first-time+users) for additional information.
+See [here](https://ukyrcd.atlassian.net/wiki/spaces/UKYHPCDocs/pages/72418017/Submitting+jobs+on+MCC+for+first-time+users) for additional information. <br>
+If the link fails, go to the left sidebar --> UKY RCD Documentation --> Morgan Compute Cluster (MCC) --> Submitting jobs on MCC (for first-time users)
+
 
 NB: All data analysis should be submitted as a job. **Do not run jobs on the login node.**
 
 ___
 
-## Run a job
-Now let's create a job file and submit an actual command that we can watch. Create a new file named counting.sh, and paste the following into it:
+## Submit your first cluster job!
+Now let's create a job file and submit a command that we can watch as it progresses. Create a new file named counting.sh, and paste the following into it:
 
 ```
 #!/bin/bash
 #SBATCH --partition=normal
-#SBATCH --time 20:00:00
+#SBATCH --time 01:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --account=coa_jdu282_brazil_bootcamp2023
@@ -158,7 +170,7 @@ Save the file, and then use `cat` to check that the job submission file looks co
 
 Submit the job using the following command: `sbatch counting.sh`
 
-Once you have the job submitted, check that it's running by using `squeue`. Lots of stuff, right? That output is a list of all the jobs that are currently running on the cluster. We can subset that in two ways. First, we could just grep our username:
+Once the job is submitted, check that it's running by using `squeue`. Lots of stuff, right? That output is a list of all the jobs that are currently running on the cluster. We can subset that in two ways. First, we could just grep our username:
 ```
 squeue | grep "mcc_user_name"
 ```
@@ -168,11 +180,11 @@ Or you can use an option in squeue:
 squeue -u "mcc_user_name"
 ```
 
-Let's check on the status of the job. Standard out (stdout) for computers is the normal output of a command/execution. Standard error (stderr) is any error messages that arise from a command/execution. The default location for stdout when MCC is running a job is in a file called `slurm-jobID.out`. 
+Let's check on the status of the job. Standard out (stdout) for computers is the normal output of a command. Standard error (stderr) is any error messages that arise from a command. The default location for stdout when MCC is running a job is in a file called `slurm-jobID.out`. 
 
-So let's see what's in the slurm file. It should be in the same directory as the batch script. Try using `cat` to see what's in that file. How long ago did you submit that file? Can you piece it together based on what's in the output file?
+So let's see what's in the slurm file. It should be in the same directory as the batch script. Try using `cat` to see what's in that file. If the job is still running, can you figure out where you are in the job commands?
 
-Another way to interact with the stdout from a job is to write that output to another file. Take the `counting.sh` file and at the end of each "echo" line, add the following `>> counting_output.txt`. Resubmit the job, and now see if you can follow the status of the job in real time using `cat` and the `counting_output` file.
+Another way to interact with the stdout from a job is to write that output to another file. Take the `counting.sh` file and at the end of each "echo" line, add the following `>> counting_output.txt`. Resubmit the job, and now see if you can follow the status of the job in real time using `cat` and the `counting_output.txt` file.
 
 You should have emails in your inbox that document when these jobs started and ended. The exit code is important in this email, as it lets you know if the job finished with no issues (exit code 0) or with an error or other issue. See [here](https://hpc-discourse.usc.edu/t/exit-codes-and-their-meanings/414) for more info on exit codes. They can be very useful when troubleshooting errors!
 
@@ -193,9 +205,9 @@ ___
 
 ## Singularities
 The full list of singularity programs is [here](https://ukyrcd.atlassian.net/wiki/spaces/UKYHPCDocs/pages/72417975/Software+list+for+singularity+containers+for+conda+packages+in+the+MCC+cluster). <br>
-If the link fails, go to the left sidebar UKY RCD Docs --> Morgan Compute Cluster (MCC) --> Software list for singularity containers
+If the link fails, go to the left sidebar --> UKY RCD Documentation --> Morgan Compute Cluster (MCC) --> Software list for singularity containers
 
-These are like modules except that instead of loading them, the singularity information is added to the batch script.
+These are like modules except that instead of loading them, the singularity information is added to the job script.
 
 ```
 container=/from/container_name_and_location/column
@@ -204,7 +216,7 @@ singularity run --app app_name_from_the_second_column $container program_command
 ___
 
 ## Getting data for read mapping and SNP calling with GATK
-SNP calling from whole-genome (shotgun) sequence data requires a reference genome plus sequencing reads from multiple individuals to map to the reference and call SNPs from. 
+SNP calling from whole-genome (shotgun) sequence data requires a reference genome plus sequencing reads from multiple individuals. The reads are mapped to the reference and genotypes are called from the alignments.
 
 We're going to use Bactrocera dorsalis (oriental fruit fly) whole-genome sequence data from [this paper](https://onlinelibrary.wiley.com/doi/full/10.1111/eva.13507).
 
@@ -225,8 +237,7 @@ We will download the latest Bactrocera dorsalis (oriental fruit fly) reference g
 
 4. Right-click and copy the link for `GCF_023373825.1_ASM2337382v1_genomic.fna.gz`
 
-5. In your folder on MCC type `wget` and then paste the link. <br>
-`wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/023/373/825/GCF_023373825.1_ASM2337382v1/GCF_023373825.1_ASM2337382v1_genomic.fna.gz`
+5. In your folder on MCC type `wget`, paste the link, and run the command. <br>
 
 6. After downloading, your folder should look something like this:
 <p align="left">
@@ -235,21 +246,21 @@ We will download the latest Bactrocera dorsalis (oriental fruit fly) reference g
 
 ___
 
-### **_Task:_** Get sequencing read files (and submit your first cluster job!)
-Our data is from this [BioProject](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA893460/). We need to download shotgun reads for multiple individuals, which is a repetitive task (and the perfect opportunity to use a for loop).
+### **_Task:_** Get sequencing read files
+Our data is from this [BioProject](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA893460/). We need to download shotgun reads for multiple individuals, which is a repetitive task (and the perfect opportunity to use a for loop!).
 
 A list of the SRA accessions is at `/pscratch/jdu282_brazil_bootcamp2023/data/Bdor_WGS_SRA_list.txt`
 
 You were all assigned a set of four samples, to get a file with the accession values run <br>
 `sed -n '<lower_number>,<upper_number>' /pscratch/jdu282_brazil_bootcamp2023/data/Bdor_WGS_SRA_list.txt > SRA_accessions.txt`
 
-To download from NCBI, we're going to need to use the program SRAtoolkit which is available [here](https://github.com/ncbi/sra-tools/wiki/01.-Downloading-SRA-Toolkit). I  already got a copy for us to use.
+To download from NCBI, we need to use the program [SRAtoolkit](https://github.com/ncbi/sra-tools/wiki/01.-Downloading-SRA-Toolkit). I already downloaded a copy for us to use.
 
-Make a copy of your batch script template `cp batch_header.sh SRA_download.sh`
+Make a copy of your job script template `cp batch_header.sh SRA_download.sh`
 
 Open SRA_download.sh and add the following after the header:
 ```
-for f in `cat SRA_accessions.txt`; do /scratch/kdu224/iceland_workshop/programs/sratoolkit.3.1.0-ubuntu64/bin/prefetch $f; /scratch/kdu224/iceland_workshop/programs/sratoolkit.3.1.0-ubuntu64/bin/fasterq-dump --outdir fastq --skip-technical --threads 32 $f/$f.sra; rm -rf $f; done
+for f in `cat SRA_accessions.txt`; do /pscratch/jdu282_brazil_bootcamp2023/programs/sratoolkit.3.1.0-ubuntu64/bin/prefetch $f; /pscratch/jdu282_brazil_bootcamp2023/sratoolkit.3.1.0-ubuntu64/bin/fasterq-dump --outdir fastq --skip-technical --threads 32 $f/$f.sra; rm -rf $f; done
 ```
 
 Then submit your job `sbatch SRA_download.sh`. Assuming it starts right away, this should take about 10 minutes and you should have a new folder named "fastq".
@@ -259,19 +270,23 @@ ___
 ### **_Task:_** Subsample sequencing read files
 The sequence files have ~20-30 million reads. To speed up analysis time, let's subsample them down to 1 million reads. This way, we'll have enough time for the entire genotyping pipeline, but it will obviously affect the final SNP dataset that we obtain at the end.
 
-Make and submit a batch script named SRA_subsample.sh with these commands. Also change `#SBATCH --ntasks=32` to `#SBATCH --ntasks=1`
+Make and submit a batch script named SRA_subsample.sh with these commands. Also change `#SBATCH --ntasks=32` to `#SBATCH --ntasks=1`. This job will take about 10 seconds.
 
 ```
-cp SRA_accessions.txt fastq
 cd fastq
 
-for f in `cat SRA_accessions.txt`; do head -n 4000000 "$f"_1.fastq > "$f"_1Mreads_R1.fastq; head -n 4000000 "$f"_2.fastq > "$f"_1Mreads_R2.fastq; done
-
-rm *_1.fastq
-rm *_2.fastq
+for f in `cat /path/to/SRA_accessions.txt`; do head -n 4000000 "$f"_1.fastq > "$f"_1Mreads_R1.fastq; head -n 4000000 "$f"_2.fastq > "$f"_1Mreads_R2.fastq; done
 ```
 
-**_Question:_** Can you follow what's going on in this job? Why did we put a copy of SRA_accessions.txt in the fastq folder? Why are we getting 4000000 lines per file? And what does the `>` do?
+**_Question:_** Can you follow what's going on in this job? Why are we getting 4000000 lines per file? And what does the `>` do?
 
+<details>
+<summary>Answer</summary> 
 
-### Symlinks to frequently used files
+For each SRA accession, get the first 4 million lines from the read 1 file and redirect the output to SRAaccession_1Mreads_R1.fastq, then do the same for the read 2 file.
+
+In a fastq file, each sequencing read is four lines long, so to subset 1 million reads, we need 4 million lines from the original read file.
+
+The `>` is redirecting the output from the `head` command to the subsample read file.
+
+</details>
