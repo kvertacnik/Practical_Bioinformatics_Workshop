@@ -170,3 +170,14 @@ Wildcards can be combined and used with various commands (e.g., ls, cp, mv, rm, 
 
 2. Question Mark `?`: This wildcard stands in for exactly one character. It's useful when you know the general pattern of the file names but want to match only those that have a specific character in a specific position. For example:
 * `ls file?.txt` would list files like file1.txt, fileA.txt, but not file10.txt or file.txt.
+
+### Other things to know: Symlinks
+Symbolic links (symlinks) are a type of file that point to another file or directory, similar to shortcuts in Windows or aliases in macOS. When you access a symlink, the operating system redirects you to the file or directory it points to.
+
+To create a symlink, run:
+```
+ln -s /path/to/original /path/to/symlink
+```
+This creates a symlink at /path/to/symlink that points to /path/to/original.
+
+To remove a symlink use `rm /path/to/symlink`. This only removes the symlink and doesn't affect the target file.
