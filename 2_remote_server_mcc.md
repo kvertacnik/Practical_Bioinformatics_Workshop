@@ -220,32 +220,6 @@ SNP calling from whole-genome (shotgun) sequence data requires a reference genom
 
 We're going to use Bactrocera dorsalis (oriental fruit fly) whole-genome sequence data from [this paper](https://onlinelibrary.wiley.com/doi/full/10.1111/eva.13507).
 
-### **_Task:_** Download the _Bactrocera dorsalis_ reference genome from NCBI
-We will download the latest Bactrocera dorsalis (oriental fruit fly) reference genome from NCBI (National Center for Biotechnology Information (USA)).
-
-1. Search for "Bactrocera dorsalis" on https://www.ncbi.nlm.nih.gov/
-
-2. Click on "Genomes" and then click on the genome with the green check (which is the latest reference genome).
-
-<p align="left">
-  <img src="assets/gatk/Bdor_NCBI_1.png" width="60%">
-</p>
-
-3. Ignore the big download button and instead navigate to the FTP server. You should be at https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/023/373/825/GCF_023373825.1_ASM2337382v1/
-
-![Bdor NCBI genome page](assets/gatk/Bdor_NCBI_2.png)
-
-4. Right-click and copy the link for `GCF_023373825.1_ASM2337382v1_genomic.fna.gz`
-
-5. In your folder on MCC type `wget`, paste the link, and run the command. <br>
-
-6. After downloading, your folder should look something like this:
-<p align="left">
-  <img src="assets/gatk/Bdor_MCC_download.png" width="60%">
-</p>
-
-___
-
 ### **_Task:_** Get sequencing read files
 Our data is from this [BioProject](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA893460/). We need to download shotgun reads for multiple individuals, which is a repetitive task (and the perfect opportunity to use a for loop!).
 
@@ -254,7 +228,7 @@ A list of the SRA accessions is at `/pscratch/jdu282_brazil_bootcamp2023/data/Bd
 You were all assigned a set of four samples, to get a file with the accession values run <br>
 `sed -n '<lower_number>,<upper_number>' /pscratch/jdu282_brazil_bootcamp2023/data/Bdor_WGS_SRA_list.txt > SRA_accessions.txt`
 
-To download from NCBI, we need to use the program [SRAtoolkit](https://github.com/ncbi/sra-tools/wiki/01.-Downloading-SRA-Toolkit). I already downloaded a copy for us to use.
+To download from NCBI, we need to use the program [SRAtoolkit](https://github.com/ncbi/sra-tools/wiki/01.-Downloading-SRA-Toolkit). It's already installed at `/pscratch/jdu282_brazil_bootcamp2023/programs/sratoolkit.3.1.0-ubuntu64/`
 
 Make a copy of your job script template `cp batch_header.sh SRA_download.sh`
 
