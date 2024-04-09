@@ -157,3 +157,16 @@ GATK uses a Java wrapper to call commands, so instead of calling a .jar file, as
 ```
 module load ccs/java/jdk-17.0.2
 ```
+
+### Other things to know: Wildcards
+Wildcards are symbols used to represent one or more characters in commands. They are useful for performing operations on multiple files or directories that **share a common pattern in their names**. 
+
+Wildcards can be combined and used with various commands (e.g., ls, cp, mv, rm, etc.) to perform batch operations on files. It's important to use them carefully, especially in commands that modify or delete files, as they can affect a large number of files with a single command (again, command line does not have an "undo" function).
+
+1. Asterisk `*`: This is the most widely used wildcard. It represents any number of characters (including zero characters) in a filename or extension. For example:
+* `ls *.txt` lists all files in the current directory that have a .txt extension.
+* `cp *.jpg /pictures` copies all JPEG files from the current directory to the /pictures directory.
+* `rm *` would delete every file in the current directory (use this with extreme caution).
+
+2. Question Mark `?`: This wildcard stands in for exactly one character. It's useful when you know the general pattern of the file names but want to match only those that have a specific character in a specific position. For example:
+* `ls file?.txt` would list files like file1.txt, fileA.txt, but not file10.txt or file.txt.
