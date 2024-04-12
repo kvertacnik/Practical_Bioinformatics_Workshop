@@ -34,7 +34,7 @@ NB: Keep your installed bioinformatics programs in a single place. On Linux and 
 ___
 
 ## Updating your PATH
-Environmental variables store information specific to your computer. Software can access these variables to know how things are set up on your computer. The `PATH` variable (Windows, Linux, macOS) specifies the directories where executable programs are located.
+Environmental variables store information specific to your computer. Software can access these variables to know how things are set up on your computer. The `$PATH` variable (Windows, Linux, macOS) specifies the directories where executable programs are located.
 
 Once in your PATH variable, you can call the program by name without having to type the full path.
 
@@ -46,7 +46,7 @@ To add a program to your PATH:
 1. Open .bash_profile `nano ~./bash_profile`
 2. Add this line
 ```
-export PATH=/where/is/the/program/directory:$PATH 
+export PATH=$PATH:/where/is/the/program/directory/
 ```
 3. Save and exit nano `control + x`
 4. Refresh your command line shell by running `source ~/.bash_profile`
@@ -181,3 +181,38 @@ ln -s /path/to/original /path/to/symlink
 This creates a symlink at /path/to/symlink that points to /path/to/original.
 
 To remove a symlink use `rm /path/to/symlink`. This only removes the symlink and doesn't affect the target file.
+
+### Other things to know: Permissions (Linux)
+Permissions are rules that determine who can access or modify files and directories. 
+
+Types of permissions:
+
+* Read (r): Grants the ability to read the contents of the file or list the contents of a directory.
+* Write (w): Allows the file to be modified or new files to be created within a directory.
+* Execute (x): Permits the execution of a file (like a script or a program) or access to a directory.
+* `-` means no permission
+
+User classes:
+* User (u): The owner of the file or directory.
+* Group (g): A set of users who belong to the same group. Each file/directory is associated with a group.
+* Others (o): Everyone else who has access to the system.
+
+To see file information run `ls -lh`
+
+![File information](assets/command_line/ls_output.png)
+
+Looking close at the permissions we see how they are broken down by user class. In this example, anyone (the user, group members, and outside the group) can read/write/execute the file (this is highly unsafe).
+
+<p align="left">
+  <img src="assets/command_line/permissions.png" width="50%">
+</p>
+
+The `chmod` command is used to set permissions. 
+```
+chmod [references][operator][modes] filename
+```
+The reference is the class (u, g, or o). The operator  adds (+), removes (-) or explicitly sets (=) the particular permissions. The modes are read (r), write (w), or execute (x). 
+
+For example, to add the execute permission for the user to file1 run `chmod u+x file1`
+
+For more information see [here](https://kb.iu.edu/d/abdb).

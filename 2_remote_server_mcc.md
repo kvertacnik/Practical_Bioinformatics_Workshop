@@ -255,7 +255,7 @@ for f in `cat /path/to/SRA_accessions.txt`; do head -n 4000000 "$f"_1.fastq > "$
 **_Question:_** Can you follow what's going on in this job? Why are we getting 4000000 lines per file? And what does the `>` do?
 
 <details>
-<summary>Answer</summary> 
+<summary>Answer</summary>
 
 For each SRA accession, get the first 4 million lines from the read 1 file and redirect the output to SRAaccession_1Mreads_R1.fastq, then do the same for the read 2 file.
 
