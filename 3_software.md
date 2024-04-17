@@ -11,30 +11,33 @@ Programming languages can be broadly categorized into two types based on how the
 * A compiled language (e.g., C, C++) is converted into machine code before runtime. During "compiling", a compiler program converts the source code into an executable file that can be run on the target machine. The compiled code is optimized for the specific hardware and operating system of the machine on which it is intended to run.
 
 ### Compiled languages: installing from source code
-1. Download the software package. They are often compressed in `.tar.gz` format; use `tar -xvf package.tar.gz` to decompress.
+1. Download the software package. They are often compressed in `.tar.gz` or `.gz` format; use `tar -xvf package.tar.gz` or `gunzip package.gz` to decompress.
 2. Go into the decompressed source code folder. There should be a file named "configure".
 3. In the source code folder, run `./configure` <br>
-   If you do not have root access, make a folder where you have permission to install programs and specify the path to that folder <br>
-   `./configure --prefix=/local/installation/folder` <br>
+   If you do not have permission to install programs, list a path to where you can install programs <br>
+   `./configure --prefix=/installation/folder` <br>
    
 4. In the source code folder, run `make`
 5. In the source code folder, run `make install`
 6. There should now be a `bin` folder that has executable binaries for the program. <br>
-   If you ran `./configure --prefix=/local/installation/folder`, the binaries will be in the specified folder.
+   If you ran `./configure --prefix=/installation/folder`, the binaries will be in the specified folder.
 
 ### Interpreted languages and pre-compiled binaries
 Interpreted languages do not require installation. Likewise, for compiled languages, if you're lucky a pre-compiled binary is available for your specific CPU architecture and operating system. 
 
 If you have one of these, download and decompress the file, place the program/binary where you install programs, and you're ready to go! 
 
-![Binaries example](assets/command_line/binaries.png)
+<p align="left">
+  <img src="assets/command_line/binaries.png" width="60%">
+</p>
+
 
 NB: Keep your installed bioinformatics programs in a single place. On Linux and macOS that is typically `/usr/local/bin`, although I like to make a directory at `/usr/local/bin/programs` to keep my bioinformatics programs separate. On Windows make a directory in `C:\Program Files`. Regardless, make sure the directory is in your PATH.
 
 ___
 
 ## Updating your PATH
-Environmental variables store information specific to your computer. Software can access these variables to know how things are set up on your computer. The `$PATH` variable (Windows, Linux, macOS) specifies the directories where executable programs are located.
+Environmental variables store information specific to your computer. Software can access these variables to know how things are set up on your computer. The `$PATH` variable specifies the directories where executable programs are located.
 
 Once in your PATH variable, you can call the program by name without having to type the full path.
 
@@ -46,12 +49,12 @@ To add a program to your PATH:
 1. Open .bash_profile `nano ~./bash_profile`
 2. Add this line
 ```
-export PATH=$PATH:/where/is/the/program/directory/
+export PATH=$PATH:/path/to/program/directory/
 ```
 3. Save and exit nano `control + x`
 4. Refresh your command line shell by running `source ~/.bash_profile`
 
-NB: Do not add the program itself to the path, just the directory the holds the program.
+Do not add the program itself to the path, just the directory the contains the program.
 
 ___
 
@@ -59,7 +62,7 @@ ___
 Package managers simplify software management by automating installation, configuration, and upgrades. They don't have every program but it's nice when they have the one you need. 
 
 ### Conda
-Anaconda is a Python distribution with thousands of packages. Conda is the package manager for Anaconda. Instead of the complete Anaconda distribution, [Miniconda](https://docs.anaconda.com/free/miniconda/miniconda-install/) is a bare-bones version that comes with Conda, Python, and a few other useful packages.
+Anaconda is a Python distribution with thousands of packages. Conda is the package manager for Anaconda. Instead of the complete Anaconda distribution, [Miniconda](https://docs.anaconda.com/free/miniconda/miniconda-install/) is a bare-bones version that comes with Conda, Python, and a few other useful packages; if you're going to use Conda, I suggest installing Miniconda.
 
 In addition to package management, Conda is also an environment manager where you can create and manage virtual environments (isolated environments with different packages and versions of those packages). Each time you want to use the tools in an environment, you need to activate the environment.
 
@@ -89,15 +92,9 @@ ___
 
 Most programs come with a README file, a text file that documents how to use the program. It is often the first thing people look at when working with a new program.
 
-Besides what the program does and how to use it, the README can have information on system requirements (e.g., other software the program needs), installation instructions, and links to other resources (e.g., website or manual with detailed documentation).
+Besides what the program does and how to use it, the README can have information on dependencies (additional software the program requires to function properly), installation instructions, and links to other resources (e.g., website or manual with detailed documentation).
 
 Many basic questions about the program can be addressed by looking in the README (unless you have a poorly written one).
-
-**_Task:_** Look at a README file and get an idea of what kind of information it contains. Download the program fastp [here](https://github.com/OpenGene/fastp). Unzip the file by clicking on it, and then open the resulting folder to find the README. 
-
-<p align="left">
-  <img src="assets/command_line/fastp_download.png" width="50%">
-</p>
 
 ___
 
@@ -110,15 +107,24 @@ Programs often have a `-h` or `--help` option that lists all the program's optio
 ___
 
 ## Installing programs and setting up the environment for read mapping and GATK SNP calling
-In your folder on the cluster, make a folder named "programs" and install the following in that folder.
+In your personal folder on the cluster, make a folder named "programs" and install the following in that folder.
 
 ### fastp
-This program does read trimming, among other things. Fastp comes as a pre-built binary, so no installation is required. We just need to download the files to the cluster and make sure they are accessible with `chmod`.
+This program does read trimming, among other things. Fastp comes as a prebuilt binary, so no installation is required. We just need to download the files to the cluster and make sure they are accessible with `chmod`.
 
 ```
 wget http://opengene.org/fastp/fastp
 chmod a+x ./fastp
 ```
+
+Add the executable to your path
+1. Open .bash_profile `nano ~./bash_profile`
+2. Add this line (update with your information):
+```
+export PATH=$PATH:/scratch/kdu224/bioinf_2024/students/user_name/programs
+```
+3. Save and exit nano `control + x`
+
 
 ### BWA2
 This is a popular read mapping (alignment) program. It also comes as a prebuilt binary, but this time the download is a tar.bz2 file, so we need to decompress it.
@@ -128,6 +134,12 @@ wget https://github.com/bwa-mem2/bwa-mem2/releases/download/v2.2.1/bwa-mem2-2.2.
 tar -xvf bwa-mem2-2.2.1_x64-linux.tar.bz2 
 ```
 
+Add the path to the bwa-mem2-2.2.1_x64-linux directory to your ~/.bash_profile
+```
+export PATH=$PATH:/scratch/kdu224/bioinf_2024/students/user_name/programs/bwa-mem2-2.2.1_x64-linux/
+```
+
+
 ### bamUtil
 This program modifies read mapping output files (BAM/SAM files). This time we're going to create a conda environment for bamUtil. These steps can be done in a few different ways, but here we'll create an empty environment in a specific location, activate it, then install bamUtils into that environment.
 
@@ -136,6 +148,7 @@ module load ccs/conda/python
 conda create --prefix /your/cluster/folder/bamUtil_env python=3.9
 conda activate /your/cluster/folder/bamUtil_env
 conda install -c bioconda bamutil
+conda deactivate bamUtil_env
 ```
 
 On the cluster, when you submit a job file that requires a Conda environment, include the line `module load ccs/conda/python` before the `conda activate` line. Otherwise, you'll get the error `-bash: conda: command not found`.
@@ -149,16 +162,57 @@ module load samtools-1.12-gcc-9.3.0-zo3utt7
 ### GATK
 ```
 wget https://github.com/broadinstitute/gatk/releases/download/4.5.0.0/gatk-4.5.0.0.zip
-unzip 4.5.0.0.zip
+unzip gatk-4.5.0.0.zip
 ```
 
-GATK uses a Java wrapper to call commands, so instead of calling a .jar file, as you often do with java tools (e.g. `java --jar file.jar`), we can just call the wrapper as long as java is functioning (i.e., we need to load the cluster's Java module).
+Add the path to the gatk-4.5.0.0 directory to your ~/.bash_profile
+```
+export PATH=$PATH:/scratch/kdu224/bioinf_2024/students/user_name/programs/gatk-4.5.0.0
+```
+
+
+GATK uses a Java wrapper to call commands, so instead of calling a .jar file, as you often do with java tools (e.g. `java --jar file.jar`), we can just call the wrapper as long as java is functioning (i.e., we need to load the cluster's Java module). We also need to load python (as of April 2024).
 
 ```
 module load ccs/java/jdk-17.0.2
+module load ccs/conda/python
 ```
 
-### Other things to know: Wildcards
+<br>
+<br>
+<br>
+
+At this point your programs folder should have at least these files:
+<p align="left">
+  <img src="assets/gatk/programs_folder.png" width="50%">
+</p>
+
+Your ~/.bash_profile should look something like this:
+```
+export PATH=$PATH:/scratch/kdu224/bioinf_2024/students/kim/programs/
+
+export PATH=$PATH:/scratch/kdu224/bioinf_2024/students/kim/programs/bwa-mem2-2.2.1_x64-linux/
+
+export PATH=$PATH:/scratch/kdu224/bioinf_2024/students/kim/programs/gatk-4.5.0.0/
+```
+
+These are the modules we will use:
+```
+module load ccs/conda/python
+module load samtools-1.12-gcc-9.3.0-zo3utt7
+module load ccs/java/jdk-17.0.2
+```
+
+And you should have a conda environment named `bamUtil_env`
+```
+conda activate /your/cluster/folder/bamUtil_env
+```
+
+___
+
+## Other things to know 
+
+### Wildcards
 Wildcards are symbols used to represent one or more characters in commands. They are useful for performing operations on multiple files or directories that **share a common pattern in their names**. 
 
 Wildcards can be combined and used with various commands (e.g., ls, cp, mv, rm, etc.) to perform batch operations on files. It's important to use them carefully, especially in commands that modify or delete files, as they can affect a large number of files with a single command (again, command line does not have an "undo" function).
@@ -166,23 +220,22 @@ Wildcards can be combined and used with various commands (e.g., ls, cp, mv, rm, 
 1. Asterisk `*`: This is the most widely used wildcard. It represents any number of characters (including zero characters) in a filename or extension. For example:
 * `ls *.txt` lists all files in the current directory that have a .txt extension.
 * `cp *.jpg /pictures` copies all JPEG files from the current directory to the /pictures directory.
-* `rm *` would delete every file in the current directory (use this with extreme caution).
+* `rm *` deletes every file in the current directory (use with extreme caution).
 
-2. Question Mark `?`: This wildcard stands in for exactly one character. It's useful when you know the general pattern of the file names but want to match only those that have a specific character in a specific position. For example:
-* `ls file?.txt` would list files like file1.txt, fileA.txt, but not file10.txt or file.txt.
+2. Question Mark `?`: This wildcard stands in for exactly one character. It's useful when you know the general pattern of the file names but want to match only those at a specific position. For example: `ls file?.txt` would list files like file1.txt, fileA.txt, but not file10.txt or file.txt.
 
-### Other things to know: Symlinks
-Symbolic links (symlinks) are a type of file that point to another file or directory, similar to shortcuts in Windows or aliases in macOS. When you access a symlink, the operating system redirects you to the file or directory it points to.
+## Symlinks
+Symbolic links (symlinks) are a type of file that points to another file or directory, similar to shortcuts in Windows or aliases in macOS. When you access a symlink, the operating system redirects you to the file or directory it points to.
 
 To create a symlink, run:
 ```
-ln -s /path/to/original /path/to/symlink
+ln -s /path/to/original/file name_of_symlink
 ```
-This creates a symlink at /path/to/symlink that points to /path/to/original.
+This creates a symlink in the current working directory that points to /path/to/original.
 
-To remove a symlink use `rm /path/to/symlink`. This only removes the symlink and doesn't affect the target file.
+To remove a symlink use `rm symlink`. This only removes the symlink and doesn't affect the target file.
 
-### Other things to know: Permissions (Linux)
+## Permissions (Linux)
 Permissions are rules that determine who can access or modify files and directories. 
 
 Types of permissions:
@@ -197,22 +250,22 @@ User classes:
 * Group (g): A set of users who belong to the same group. Each file/directory is associated with a group.
 * Others (o): Everyone else who has access to the system.
 
-To see file information run `ls -lh`
+To see file information run `ls -l`
 
 ![File information](assets/command_line/ls_output.png)
 
-Looking close at the permissions we see how they are broken down by user class. In this example, anyone (the user, group members, and outside the group) can read/write/execute the file (this is highly unsafe).
+Looking at the permissions we can see how they are broken down by user class. In this example, anyone (the user, group members, and outside the group) can read/write/execute the file (this is highly unsafe).
 
 <p align="left">
-  <img src="assets/command_line/permissions.png" width="50%">
+  <img src="assets/command_line/permissions.png" width="30%">
 </p>
 
 The `chmod` command is used to set permissions. 
 ```
 chmod [references][operator][modes] filename
 ```
-The reference is the class (u, g, or o). The operator  adds (+), removes (-) or explicitly sets (=) the particular permissions. The modes are read (r), write (w), or execute (x). 
+The reference is the class (u, g, or o). The operator adds (+), removes (-) or explicitly sets (=) the particular permissions. The modes are read (r), write (w), or execute (x). 
 
-For example, to add the execute permission for the user to file1 run `chmod u+x file1`
+For example, let's say we wanted to add user execute permissions to "file1". We would run `chmod u+x file1`
 
 For more information see [here](https://kb.iu.edu/d/abdb).

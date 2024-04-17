@@ -45,7 +45,9 @@ There are two directories that start with "D" (Desktop and Documents). Tab-compl
 <br>
 NB: One way to get a file or folder path is to drop the item into the Terminal.
 
-![Path shortcut](assets/command_line/drag_and_drop_path.png)
+<p align="left">
+  <img src="assets/command_line/drag_and_drop_path.png" width="60%">
+</p>
 
 NB: Command line has a hard time understanding whitespace in file or directory names. For example, is `my file.txt` one file or two files named "my" and "file.txt"? **Best practice is to never have whitespace in names.** "my file.text" should be "my_file.text", "my-file.txt", "myFile.txt", etc. Also, do not include any symbols in file names except for `-` or `_` or `.`
 
@@ -69,7 +71,7 @@ ___
 
 `cat` = "concatenate". It combines multiple files `cat file1 file2 > file1and2` and can print the contents of a file to the screen `cat file_name`
 
-For directories, add `-r` to `cp`, `mv`, and `rm`. For example, use `rm -r folder_name` to delete a folder.
+For directories, add `-r` to `cp` and add `-rf` to `rm`. For example, use `rm -r folder_name` to copy a folder.
 
 **_Task:_** Go to your desktop directory. Make a folder named `examples`
 
@@ -243,6 +245,9 @@ Rerun the for loop, but this time redirect the output:
 <summary>Answer</summary>
 
 When we redirect the output to log_edited1.txt, the for loop now saves the output of each iteration to log_edited1.txt. This means the file is _overwritten_ for each item in the list. What the file contains at the end of the for loop is the results of the last iteration.
+<br>
+<br>
+Note that `>` redirects output to a new file while `>>` appends output to an existing file. If we had used `>>` then we would see the output of both loop iterations.
 
 </details>
 

@@ -28,7 +28,7 @@ zcat GCF_023373825.1_ASM2337382v1_genomic.fna.gz | grep ">" | wc -l
 <details>
 <summary>Answer</summary>
 
-Fasta sequences start with a header line. The header line starts with `>`, so when we search for `>`, we're looking at each fasta entry.
+Fasta sequences start with a header line. The header line starts with `>`, so when we search for `>`, we're looking for each fasta entry.
 
 </details>
 <br>
@@ -68,7 +68,7 @@ My go-to commands are the following, using seqtk an example:
 ```
 Which one of these will work depends on the software; as you can see, seqtk doesn't like either help command, but does like being called without options, indicating the installation was successful. 
 
-Even if you've never used the software you're installing, you should be able to tell whether the output of those commands is something that makes sense. Here, we know this software deals with sequence/genome manipulation and you see options specific to that task, as compared to some error message  that has nothing to do with sequencing. 
+Even if you've never used the software you're installing, you should be able to tell whether the output of those commands is something that makes sense. Here, we know this software deals with sequence/genome manipulation and you see options specific to that task, as compared to some error message that has nothing to do with sequencing. 
 
 What if you try the above command without `./`?  You'll probably see something like this:
 ```
@@ -103,7 +103,7 @@ Now we can be in any directory and call seqtk using `/pscratch/jdu282_brazil_boo
 
 Second, we could make a symbolic link (or soft link) in some directory that is basically a shortcut link to where we installed seqtk. So if you `cd $HOME` and then do the following, you've created a shortcut to this install position in your home directory.
 ```
-ln -s /path/to/your/seqtk/executable
+ln -s /path/to/your/seqtk/executable seqtk
 ```
 NOTE, here we're referring to the executable file itself with the soft link. So if you're in your home directory, you can then run `./seqtk`, and you should get a sensible output.
 
@@ -123,9 +123,9 @@ Give it a try with seqtk. A couple things to NOTE:<br>
 
 ### bash_profile
 The permanent solution is to add that export path command to a file named `.bash_profile` in your home directory. We will need to generate it manually. The `.` makes the file invisible to keep you from accidentally deleting it. <br>
-1. Create your bash_profile file: `nano ~/.bash_profile` <br>
+1. Create/open your bash_profile file: `nano ~/.bash_profile` <br>
 (tilde `~/` is a nice shortcut for your home directory, so is $HOME; both are shorter than doing cd /home/[username]).
-3. Paste in the following:
+2. Add this to be beginning of the file:
 ```
 # .bash_profile
 
@@ -136,19 +136,11 @@ if [ -f ~/.bashrc ]; then
 	. ~/.bashrc
 fi
 ```
-4. Now below that, you can paste in the `export PATH` command that you used before. So it should look something like this:
+3. At the bottom of the file add the `export PATH` command that you used before. 
 ```
-# .bash_profile
-
-# User specific environment and startup programs
-	
-# Get the aliases and functions
-if [ -f ~/.bashrc ]; then
-	. ~/.bashrc
-fi
-
 export PATH=$PATH:/path/to/your/seqtk/installation/directory/
 ```
+4. Save and exit nano (`control + x`)
 
 Now every time you log into this cluster, the system looks in this file and adds all those locations with `export PATH` lines to your PATH. This essentially creates a permanent solution for adding locations to PATH. 
 
@@ -166,9 +158,9 @@ samtools faidx GCF_023373825.1_ASM2337382v1_genomic.fna
 ls -l       # what's new in here?
 nano GCF_023373825.1_ASM2337382v1_genomic.fna.fai
 ```
-The `.fai` file is an index file, and is often a requirement for mapping reads or manipulating genomes and associated data (we'll use these frequently for this class). You can see what the column headers mean [here](http://www.htslib.org/doc/faidx.html), but the main thing for right now is that column 1 is the scaffold name and column 2 is how long that scaffold is. So you can see those first 6 scaffolds (the named chromosomes) are all much longer than the the other scaffolds, and the mitogenome is ~16k bp, which is standard for most insects. 
+The `.fai` file is an index file, and is often required for mapping reads or manipulating genomes and associated data (we'll use these frequently for this class). You can see what the column headers mean [here](http://www.htslib.org/doc/faidx.html), but the main thing for right now is that column 1 is the scaffold name and column 2 is how long that scaffold is. So you can see those first 6 scaffolds (the named chromosomes) are all much longer than the the other scaffolds, and the mitogenome is ~16k bp, which is standard for most insects. 
 
-This is a pretty good genome, and for that reason, we might want to just limit ourselves to the named chromosomes and ignore the rest of the assembly since it's not going to give us any location information (gene proximity). Seqtk can help us do that. Unfortunately, the documentation for seqtk is not great, but what we can use is the `subseq` command, which extracts fasta sequences from a multi-fasta file we provide. 
+This is a pretty good genome, and for that reason, we might want to just limit ourselves to the named chromosomes and ignore the rest of the assembly since it's not going to give us any genomic location information. Seqtk can help us do that. Unfortunately, the documentation for seqtk is not great, but what we can use is the `subseq` command, which extracts fasta sequences from a multi-fasta file we provide. 
 
 1. From the output above (listing the chromosomes in the assembly file), create a file named "Bdor_chromosomes" with the following contents:
 ```
@@ -210,7 +202,7 @@ The usage for seqtk rename is `seqtk rename <in.fq> [prefix]`. What the function
 
 So we start by telling the program that the fasta file is GCF_023373825.1_ASM2337382v1_chromosomes.fa and that we want the sequence names to start with "Chromosome". The rename function adds numbers, and we redirect the output (the renamed assembly) to the temp file. 
 
-But now our fasta headers look something like this: `>Chromosome1 Bactrocera dorsalis isolate Fly_Bdor chromosome 1, ASM2337382v1, whole genome shotgun sequence`. To get rid of everything after >Chromosome#, we tell awk to read the temp file line-by-line, and for lines with whitespace (like the spaces our fasta headers) to only keep the first item separated by a space ($1), and redirect the output to GCF_023373825.1_ASM2337382v1_chromosomes_renamed.fa.
+But now our fasta headers look something like this: `>Chromosome1 Bactrocera dorsalis isolate Fly_Bdor chromosome 1, ASM2337382v1, whole genome shotgun sequence`. To get rid of everything after >Chromosome#, we tell awk to read the temp file line-by-line, and for lines with whitespace (like the spaces in our fasta headers) to only keep the first item separated by a space ($1), and redirect the output to GCF_023373825.1_ASM2337382v1_chromosomes_renamed.fa.
 
 Finally the temp file is deleted.
 

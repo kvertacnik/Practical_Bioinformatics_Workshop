@@ -8,7 +8,10 @@
 On your computer run `ssh user_name@mcc-dtn.ccs.uky.edu` 
 
 The first time you connect to the cluster, you will get a message like this; type `yes` to continue.
-![Host authentication message](assets/command_line/host_authentication.png)
+
+<p align="left">
+  <img src="assets/command_line/host_authentication.png" width="75%">
+</p>
 
 After successfully logging in, the command line prompt will change to show that. It should look something like this `[user_name@mcc-login001 ~]$`
 
@@ -20,7 +23,7 @@ ___
 
 ## Make your working directory on MCC
 1. After logging on to MCC, go to our course directory <br>
- `cd /pscratch/jdu282_brazil_bootcamp2023/`
+ `cd /scratch/kdu224/bioinf_2024/`
 
 2. View the contents of the class directory with `ls`
 
@@ -67,8 +70,7 @@ If the destination is the local current working directory, `/path/to/local/direc
 
 <br>
 
-**_Task:_** Earlier you made a file named `hello.txt` (in your "examples" folder).
-Copy that file from your computer to your folder on the cluster. Then delete the file from the cluster.
+**_Task:_** Earlier you made a file named `hello.txt` (in your "examples" folder). Use `scp` to copy that file from your computer to your folder on the cluster.
 
 ### Another way to transfer files
 Like ssh, the command `sftp` moves files but is more interactive in that you enter a special shell within the current shell. 
@@ -77,7 +79,7 @@ Let's say you're on your local machine in a directory with a file you want to tr
 
 Then run `put local_file` to transfer the file from your local machine to the cluster. Likewise, to get a file off the cluster run `get remote_file` and it will transfer the file from the cluster to your local machine. Run `exit` to quit sftp.
 
-**_Task:_** Using sftp, copy the `log.txt` file you made previously from your computer to your folder on the cluster. Then delete the file from the cluster. Make sure you're in the folder that has log.txt when you start sftp.
+**_Task:_** Using `sftp`, copy the `log.txt` file you made previously from your computer to your folder on the cluster. Make sure you're in the folder that has log.txt when you start sftp.
 
 ___
 
@@ -95,7 +97,7 @@ Job script files must end in `.sh` and must start with the following lines:
 #SBATCH --account=          # CPU hours are monitored and charged
 
 Optional
-#SBATCH --mail-type=ALL     # Notify when job starts/ends/fails
+#SBATCH --mail-type=ALL     # Notify when job starts/ends/fails. Options: ALL, NONE, BEGIN, END, FAIL, REQUEUE
 #SBATCH --mail-user=        # Your email address
 ```
 
@@ -132,8 +134,7 @@ Each job gets a job number and a corresponding `slurm-job_number.out` file. This
 
 To cancel a submitted job use `scancel job_number` (get the job number from `squeue | grep mcc_user_name`)
 
-See [here](https://ukyrcd.atlassian.net/wiki/spaces/UKYHPCDocs/pages/72418017/Submitting+jobs+on+MCC+for+first-time+users) for additional information. <br>
-If the link fails, go to the left sidebar --> UKY RCD Documentation --> Morgan Compute Cluster (MCC) --> Submitting jobs on MCC (for first-time users)
+See [here](https://ukyrcd.atlassian.net/wiki/spaces/UKYHPCDocs/pages/72418017/Submitting+jobs+on+MCC+for+first-time+users) for additional information. If the link fails, go to the left sidebar --> UKY RCD Documentation --> Morgan Compute Cluster (MCC) --> Submitting jobs on MCC (for first-time users)
 
 
 NB: All data analysis should be submitted as a job. **Do not run jobs on the login node.**
@@ -141,7 +142,9 @@ NB: All data analysis should be submitted as a job. **Do not run jobs on the log
 ___
 
 ## Submit your first cluster job!
-Now let's create a job file and submit a command that we can watch as it progresses. Create a new file named counting.sh, and paste the following into it:
+Now let's create a job file and submit a command that we can watch as it progresses. 
+
+1. Create a new file named counting.sh (`nano counting.sh`), and paste the following into it:
 
 ```
 #!/bin/bash
@@ -166,9 +169,8 @@ sleep 6
 echo "it's been 71 seconds. What are we deviating from 5 second intervals???"
 ```
 
-Save the file, and then use `cat` to check that the job submission file looks correct.
-
-Submit the job using the following command: `sbatch counting.sh`
+2. Save the file (`control + x`), and then use `cat` to check that the job submission file looks correct.
+3. Submit the job using the following command: `sbatch counting.sh`
 
 Once the job is submitted, check that it's running by using `squeue`. Lots of stuff, right? That output is a list of all the jobs that are currently running on the cluster. We can subset that in two ways. First, we could just grep our username:
 ```
@@ -186,6 +188,8 @@ So let's see what's in the slurm file. It should be in the same directory as the
 
 Another way to interact with the stdout from a job is to write that output to another file. Take the `counting.sh` file and at the end of each "echo" line, add the following `>> counting_output.txt`. Resubmit the job, and now see if you can follow the status of the job in real time using `cat` and the `counting_output.txt` file.
 
+Note that `>` redirects output to a new file while `>>` appends output to an existing file.
+
 You should have emails in your inbox that document when these jobs started and ended. The exit code is important in this email, as it lets you know if the job finished with no issues (exit code 0) or with an error or other issue. See [here](https://hpc-discourse.usc.edu/t/exit-codes-and-their-meanings/414) for more info on exit codes. They can be very useful when troubleshooting errors!
 
 ___
@@ -201,17 +205,17 @@ Some programs are already installed on MCC, however, they need to be activated i
 
 `module unload module name` deactivates/removes the program from your account
 
+To use a module in a job script, include `module load module_name` before you run the program command.
+
 ___
 
 ## Singularities
-The full list of singularity programs is [here](https://ukyrcd.atlassian.net/wiki/spaces/UKYHPCDocs/pages/72417975/Software+list+for+singularity+containers+for+conda+packages+in+the+MCC+cluster). <br>
-If the link fails, go to the left sidebar --> UKY RCD Documentation --> Morgan Compute Cluster (MCC) --> Software list for singularity containers
+These are like modules. The full list of singularity programs is [here](https://ukyrcd.atlassian.net/wiki/spaces/UKYHPCDocs/pages/72417975/Software+list+for+singularity+containers+for+conda+packages+in+the+MCC+cluster). If the link fails, go to the left sidebar --> UKY RCD Documentation --> Morgan Compute Cluster (MCC) --> Software list for singularity containers
 
-These are like modules except that instead of loading them, the singularity information is added to the job script.
-
+This is how you would call a singularity in a job script:
 ```
 container=/from/container_name_and_location/column
-singularity run --app app_name_from_the_second_column $container program_command
+singularity run --app app_name_from_the_second_column $container program_commands
 ```
 ___
 
@@ -223,34 +227,35 @@ We're going to use Bactrocera dorsalis (oriental fruit fly) whole-genome sequenc
 ### **_Task:_** Get sequencing read files
 Our data is from this [BioProject](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA893460/). We need to download shotgun reads for multiple individuals, which is a repetitive task (and the perfect opportunity to use a for loop!).
 
-A list of the SRA accessions is at `/pscratch/jdu282_brazil_bootcamp2023/data/Bdor_WGS_SRA_list.txt`
+To download from NCBI, we need to use the program [SRAtoolkit](https://github.com/ncbi/sra-tools/wiki/01.-Downloading-SRA-Toolkit). It's already installed at `/scratch/kdu224/bioinf_2024/programs/sratoolkit.3.1.0-ubuntu64/`
 
-You were all assigned a set of four samples, to get a file with the accession values run <br>
-`sed -n '<lower_number>,<upper_number>' /pscratch/jdu282_brazil_bootcamp2023/data/Bdor_WGS_SRA_list.txt > SRA_accessions.txt`
+A list of the SRA accessions is on the cluster at `/scratch/kdu224/bioinf_2024/data/Bdor_WGS_SRA_list.txt`
 
-To download from NCBI, we need to use the program [SRAtoolkit](https://github.com/ncbi/sra-tools/wiki/01.-Downloading-SRA-Toolkit). It's already installed at `/pscratch/jdu282_brazil_bootcamp2023/programs/sratoolkit.3.1.0-ubuntu64/`
-
-Make a copy of your job script template `cp batch_header.sh SRA_download.sh`
-
-Open SRA_download.sh and add the following after the header:
+1. Go to your personal directory on the cluster.
+2. You were all assigned a set of four samples, to get a file with those accession values run `sed -n '<lower_number>,<upper_number>' /scratch/kdu224/bioinf_2024/data/Bdor_WGS_SRA_list.txt > SRA_accessions.txt` <br>
+Note that the sed command should look something like `sed -n '20,24'`
+3. Make a copy of your job script template `cp job_header.sh SRA_download.sh`
+4. Open SRA_download.sh in nano (`nano SRA_download.sh`) and add the following after the header (I suggest using copy-and-paste):
 ```
-for f in `cat SRA_accessions.txt`; do /pscratch/jdu282_brazil_bootcamp2023/programs/sratoolkit.3.1.0-ubuntu64/bin/prefetch $f; /pscratch/jdu282_brazil_bootcamp2023/sratoolkit.3.1.0-ubuntu64/bin/fasterq-dump --outdir fastq --skip-technical --threads 32 $f/$f.sra; rm -rf $f; done
+for f in `cat SRA_accessions.txt`; do /scratch/kdu224/bioinf_2024/programs/sratoolkit.3.1.0-ubuntu64/bin/prefetch $f; /scratch/kdu224/bioinf_2024/programs/sratoolkit.3.1.0-ubuntu64/bin/fasterq-dump --outdir fastq --skip-technical --threads 32 $f/$f.sra; rm -rf $f; done
 ```
 
-Then submit your job `sbatch SRA_download.sh`. Assuming it starts right away, this should take about 10 minutes and you should have a new folder named "fastq".
+5. Save your file (`control + x`) and submit your job `sbatch SRA_download.sh`. Assuming the job starts right away, it will take about 10 minutes and you should have a new folder named "fastq".
 
 ___
 
 ### **_Task:_** Subsample sequencing read files
 The sequence files have ~20-30 million reads. To speed up analysis time, let's subsample them down to 1 million reads. This way, we'll have enough time for the entire genotyping pipeline, but it will obviously affect the final SNP dataset that we obtain at the end.
 
-Make and submit a batch script named SRA_subsample.sh with these commands. Also change `#SBATCH --ntasks=32` to `#SBATCH --ntasks=1`. This job will take about 10 seconds.
-
+1. In your personal directory on the cluster, make a copy of your job script template `cp job_header.sh SRA_subsample.sh`
+2. Open SRA_subsample.sh (`nano SRA_subsample.sh`) and change `#SBATCH --ntasks=32` to `#SBATCH --ntasks=1`
+3. Add the following after the header (don't forget to update the SRA_accessions.txt path with your specific information):
 ```
 cd fastq
 
-for f in `cat /path/to/SRA_accessions.txt`; do head -n 4000000 "$f"_1.fastq > "$f"_1Mreads_R1.fastq; head -n 4000000 "$f"_2.fastq > "$f"_1Mreads_R2.fastq; done
+for f in `cat /path/to/SRA_accessions.txt`; do head -n 4000000 "$f"_1.fastq > "$f".1Mreads.R1.fastq; head -n 4000000 "$f"_2.fastq > "$f".1Mreads.R2.fastq; done
 ```
+4. Save your file (`control + x`) and submit your job `sbatch SRA_subsample.sh`. Assuming the job starts right away, it will take about 10 seconds.
 
 **_Question:_** Can you follow what's going on in this job? Why are we getting 4000000 lines per file? And what does the `>` do?
 
