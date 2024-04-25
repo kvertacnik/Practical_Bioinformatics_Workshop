@@ -102,17 +102,18 @@ Check out the html output to see what fastp can figure out for you.
 ___
 
 ## 2. Read mapping (BWA2)
-BWA2 will map our processed reads, and do it very fast for this application.  We will also create reference genome index files (remember that earlier we made the soft link genome.fasta) so that we can use the samtools program on the BWA2 alignment output files. Samtools will sort the alignment files by chromosomal coordinates and convert from sam to bam format.
+BWA2 will map our processed reads, and do it very fast for this application.  We will also create reference genome index files (remember that earlier we made the soft link genome.fasta) for GATK, BWA2, and samtools (each program has their own specific format).
+Here, samtools will sort the BWA2 alignment output files by chromosomal coordinates and convert from sam to bam format.
 
 1. In your dorsalis_WGS folder make a copy of your job_header_gatk.sh file named `2_bwa2.sh`
 2. Change the job name to `#SBATCH --job-name=2_bwa2`
 3. Add the job commands to the end of the file and submit:
 ```
-module load ccs/conda/python
 module load ccs/java/jdk-17.0.2
+module load ccs/conda/python
 module load samtools-1.12-gcc-9.3.0-zo3utt7
 
-# Make the genome index files needed for samtools (and GATK while we're at it)
+# Make genome index files (we'll use the gatk one later)
 bwa-mem2 index ./genome.fasta
 samtools faidx ./genome.fasta
 gatk CreateSequenceDictionary R=genome.fasta O=genome.dict  #really a picard tool here
@@ -130,7 +131,13 @@ You can see some of my for loops have a bit more progress checking built into th
 ___
 
 ## 3. Remove duplicate reads (gatk MarkDuplicates)
-This is another tool from picard that is now built into GATK (as of version 4). We will use MarkDuplicates to mark and remove duplicate reads. These are reads that originate from the same template molecule (see [here](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-)). 
+This is another tool from picard that is now built into GATK (as of version 4). We will use [MarkDuplicates](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-) to mark and remove duplicate reads. 
+
+Duplicate reads are reads that originate from the same template molecule. 
+* PCR duplicates are created during library prep, where PCR amplification preferentially amplifies certain DNA fragments, resulting in an excess of the same DNA fragment. 
+* Optical duplicates result from the sequencer (e.g., Illumina) separating a single cluster (which represents a single DNA fragment) into two or more clusters, creating multiple duplicate reads.
+
+ We don't want duplicate reads because (1) they provide redundant information which (2) artificially inflates read depth. See [here](https://bioinformatics.stackexchange.com/questions/2866/how-do-pcr-duplicates-arise-and-why-is-it-important-to-remove-them-for-ngs-analy).
 
 1. In your dorsalis_WGS folder make a copy of your job_header_gatk.sh file named `3_picard.sh`
 2. Change the job name to `#SBATCH --job-name=3_picard`
@@ -148,6 +155,8 @@ ___
 
 ## 4. Remove overlapping sequence (BamUtil clipOverlap)
 The clipOverlap tool from BamUtil will clip overlapping read pairs from your paired end, mapped reads. See more [here](https://genome.sph.umich.edu/wiki/BamUtil:_clipOverlap). 
+
+As with duplicate reads, we don't want overlapping sequences because they will artificially inflate read depth where the reads overlap.
 
 1. In your dorsalis_WGS folder make a copy of your job_header_gatk.sh file named `4_bamUtil_clip.sh`
 2. Change the job name to `#SBATCH --job-name=4_bamUtil_clip`
@@ -182,7 +191,7 @@ module load samtools-1.12-gcc-9.3.0-zo3utt7
 mkdir 5_add_RG_bam_out
 
 # Add the same read group information for all samples in "list"
-for f in `cat list`; do samtools addreplacerg -r ID:neb_wgs -r LB:L1 -r SM:$f.clipped.bam -o ./5_add_RG_bam_out/$f.rg.bam ./4_bamUtil_clip_out/$f.clipped.bam; done
+for f in `cat list`; do samtools addreplacerg -r ID:wgs -r LB:L1 -r SM:$f.clipped.bam -o ./5_add_RG_bam_out/$f.rg.bam ./4_bamUtil_clip_out/$f.clipped.bam; done
 
 # Index bam files
 for f in `cat list`; do samtools index ./5_add_RG_bam_out/$f.rg.bam; done
@@ -194,12 +203,12 @@ for f in `cat list`; do samtools index ./5_add_RG_bam_out/$f.rg.bam; done
 Ok, now onto the actual variant calling with GATK. There's a lot of ways to do this, depending on the size of the genome, number of individuals, how long you want it to take, etc. For our pipeline, the basic order of operations is:
 
 * Step 6 calls variants across the whole genome for each individual and saves the data as `g.vcf` files. This step can be somewhat memory intensive and time consuming, so we get around this by submitting each individual as a separate job. <br>
-For more information on HaplotypeCaller see [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035531412-HaplotypeCaller-in-a-nutshell) and [here](https://gatk.broadinstitute.org/hc/en-us/articles/360037225632-HaplotypeCaller) (note that the `-ERC GVCF` approach ignores doing multiple individuals and does not create individual g.vcf files)
+For more information on HaplotypeCaller see [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035531412-HaplotypeCaller-in-a-nutshell) and [here](https://gatk.broadinstitute.org/hc/en-us/articles/360037225632-HaplotypeCaller) (note that the `-ERC GVCF` approach ignores doing multiple individuals and does not create individual g.vcf files),
 
 * Step 7 creates a database that stores variant information for all individuals organized by genomic coordinates. The problem is, this step is very memory intensive, and if your genome is big, even more so. Here, we do this analysis this one scaffold/chromosome at a time with a for loop, but for big scaffolds you could submit a job for each scaffold like we do in step 6. <br>
-For more info on GenomicsDBImport see [here](https://gatk.broadinstitute.org/hc/en-us/articles/360036883491-GenomicsDBImport)
+For more info on GenomicsDBImport see [here](https://gatk.broadinstitute.org/hc/en-us/articles/360036883491-GenomicsDBImport).
 
-* Step 8 conducts joint genotyping across samples (all samples are genotyped for the same variants) and creates `VCF` files for each scaffold. In a final step the VCFs are combined into one final VCF file that has genotypes for all samples at the same loci across the genome. Step 8 is relatively simple, but is only needed when following steps 6 and 7 the way we are doing it here.
+* Step 8 conducts joint genotyping across samples (all samples are genotyped for the same variants) and creates `VCF` files for each scaffold. In a final step the scaffold VCFs are combined into one final VCF file that has genotypes for all samples at the same loci across the genome. Step 8 is relatively simple, but is only needed when following steps 6 and 7 the way we are doing it here.
 
 ___
 
@@ -226,7 +235,6 @@ First, we have a header file. You can see it's basically the header from job_hea
 module load ccs/conda/python
 module load ccs/java/jdk-17.0.2
 module load samtools-1.12-gcc-9.3.0-zo3utt7
-
 ```
 
 Second, I have a simple bash file that has the commands.
@@ -250,26 +258,25 @@ done
 Third, instead of using sbatch to submit the job, we will execute our job script.
 1. Make 6_gatk_hapcaller_submit.sh executable by running `chmod +x 6_gatk_hapcaller_submit.sh`
 2. Run the script `./6_gatk_hapcaller_submit.sh`
-3. Check `squeue | user_name`. You should have 4 jobs running.
+3. Check `squeue | grep user_name`. You should have 4 jobs running.
 
 _**Question:**_ Can you figure what this script is doing? Hint: we ran a single script but ended up with four running jobs.
 
 <details>
 <summary>Answer</summary> 
 
-For each sample, we are combining the header from `6_gatk_hapcaller_header` with the `gatk HaplotypeCaller` command in 6_gatk_hapcaller_submit.sh to create a new sample-specific job script and submitting that with sbatch. 
+For each sample, we are creating and submitting new sample-specific job scripts by combining the header from 6_gatk_hapcaller_header with the gatk HaplotypeCaller command in 6_gatk_hapcaller_submit.sh. 
 
 </details>
 
 <br>
 
-Having multiple jobs run simultaneously (instead running jobs sequentially one at at time), is a pretty handy way to speed up analyses that are doing the same exact thing to multiple samples/libraries/etc. This is more-or-less the non-computer-sciency alternative to what are called job arrays, which we'll talk about later on with regard to amplicon data.
+Using two files to create multiple jobs running simultaneously (instead of sequentially one at at time), is a pretty handy way to speed up analyses that are doing the same exact thing to multiple samples/libraries/etc. This is more-or-less the non-computer-sciency alternative to what are called job arrays, which we'll talk about later on with regard to amplicon data.
 
 ___
 
 ## 7. GATK GenomicsDBImport
-
-To be able to do step 7 for each chromosome individually, we can make use of a separate list for each scaffold.
+To do step 7 for each chromosome individually, we can make a list that lists each scaffold.
 1. In your dorsalis_WGS folder make a file named `seq.list`
 2. Add the following:
 ```
@@ -280,16 +287,18 @@ Chromosome4
 Chromosome5
 Chromosome6
 ```
+
 You also need a file that refers to the locations of the g.vcf files created in step 6.
-The sample map is a tab-delimited text file with sample_name--tab--path_to_sample_vcf per line. 
-1. In your dorsalis_WGS folder make run the following to create your `list.sample_map`
+The sample map is a tab-delimited text file where each line is formatted: sample_name--tab--path_to_sample_vcf.
+
+1. In your dorsalis_WGS folder run the following to create your `list.sample_map`
 ```
 for f in `cat list`; do echo -e "$f\t/path/to/your/6_gatk_hapcaller_out/folder/$f.g.vcf" >> list.sample_map; done
 ```
-Note tab character between `$f  /`
+Note the tab character `\t`.
 
 
-It should look similar to this:
+The sample map should look similar to this:
 ```
 SRR22045704	/scratch/jdu282/dorsalis_wgs2/6_gatk_hapcaller_out/SRR22045704.g.vcf
 SRR22045731	/scratch/jdu282/dorsalis_wgs2/6_gatk_hapcaller_out/SRR22045731.g.vcf
@@ -310,7 +319,7 @@ mkdir 7_GenomicsDBImport_out
 # First for loop
 for f in `cat list`; do gatk IndexFeatureFile -I ./6_gatk_hapcaller_out/$f.g.vcf; done
 
-# Second for loop
+# Second for loop. Needs seq.list and list.sample_map files
 for f in `cat seq.list`; do 
 echo "Starting $f"
 gatk --java-options "-Xmx48g -Xms48g" GenomicsDBImport --genomicsdb-workspace-path ./7_GenomicsDBImport_out/$f.db --batch-size 50 -L $f --sample-name-map ./list.sample_map -L $f --reader-threads 3
@@ -318,44 +327,20 @@ echo "Finishing $f"
 done
 ```
 
-You can see in that first for loop, we're doing additional indexing of each `g.vcf` file (could be done as a separate step or after the code in the last file), and then the second for loop, this one not in 1-line format and with some extra `echo`'s, we're creating the databases for each scaffold. 
+You can see in that first for loop, we're indexing each `g.vcf` file (this could be done as a separate step or after the code in the previous step), and then in the second for loop (this one not in 1-line format and with some extra `echo`'s) we're creating the databases for each scaffold. 
+
+Finally, make a copy of your `list.sample_map` file and place it in `/scratch/kdu224/bioinf_2024/sample_maps`. I will create a final VCF file that has everyone's samples for us to look at later. 
 
 ___
 
 ## 8. GATK GenotypeGVCFs and 9. Merging VCFs
-first creating `vcf` files from the `seq.list` file,
-
-Here's what the job submission script looks like. The location option in the `-V gendb` option is a bit finicky, but written like this the job script needs to be in the same directory as the `7_GenomicsDBImport_out`, which contains the output of step 7. 
-1. In your dorsalis_WGS folder make a copy of your job_header_gatk.sh file named `8_genotypeGVCFs.sh`
-2. Change the job name to `#SBATCH --job-name=8_genotypeGVCFs`
-3. Add the job commands to the end of the file and submit:
+Step 9 requires an input file that basically tells gatk where to find the scaffold-specific `vcf` files, which I call `seq.path.list`. Because we are consistent with our file naming, we can list the path to the output of step 8 even before running step 8.
+1. In your dorsalis_WGS folder run the following to create your `list.sample_map`
 ```
-module load ccs/conda/python
-module load ccs/java/jdk-17.0.2
-
-mkdir 8_genotypeGVCFs
-
-for f in `cat seq.list`; do
-echo "Starting $f"
-gatk --java-options "-Xmx48g" GenotypeGVCFs -R ./genome.fasta -V gendb://7_GenomicsDBImport_out/$f.db -O ./8_genotypeGVCFs/$f.vcf.gz 
-echo "Finishing $f"
-done
-
-# Merging VCFs
-gatk MergeVcfs I=seq.path.list O=9_merged.vcf.gz
-
+for i in {1..6}; do echo "/path/to/your/8_genotypeGVCFs/folder/Chromosome"$i".vcf.gz" >> seq.path.list; done
 ```
 
-Step 9 requires an input file that basically tells gatk where to find the scaffold-specific `vcf` files, which I call `seq.path.list`. Because we were consistent with our file naming, we can list the path to the output of step 8 even before running step 8
-1. In your dorsalis_WGS folder make a file named `seq.path.list`
-2. Add the equivalent information for your samples
-
-```
-for i in {1..6}; do echo "/path/to/your/8_genotypeGVCFs/folder/Chromosome$i.vcf.gz" >> seq.path.list; done
-
-```
-
-and looks like this (but obviously will have different paths when you are doing this):
+It looks like this (but obviously will have different paths when you are doing this):
 ```
 /scratch/jdu282/dorsalis_wgs2/8_GenotypeGVCFs/Chromosome1.vcf.gz
 /scratch/jdu282/dorsalis_wgs2/8_GenotypeGVCFs/Chromosome2.vcf.gz
@@ -365,7 +350,29 @@ and looks like this (but obviously will have different paths when you are doing 
 /scratch/jdu282/dorsalis_wgs2/8_GenotypeGVCFs/Chromosome6.vcf.gz
 ```
 
-With those scripts, the final output is called `9_merged.vcf.gz`, and for a real dataset, this can be a big file (tens to hundreds of Gb). 
+Here's what the job submission script looks like. The location option in the `-V gendb` option is a bit finicky, but written like this the job script needs to be in the same directory as `7_GenomicsDBImport_out` (but not in 7_GenomicsDBImport_out), which contains the output of step 7.
+
+1. In your dorsalis_WGS folder make a copy of your job_header_gatk.sh file named `8_genotypeGVCFs.sh`
+2. Change the job name to `#SBATCH --job-name=8_genotypeGVCFs`
+3. Add the job commands to the end of the file and submit:
+```
+module load ccs/conda/python
+module load ccs/java/jdk-17.0.2
+
+mkdir 8_genotypeGVCFs
+
+# Joint genotyping (step 8)
+for f in `cat seq.list`; do
+echo "Starting $f"
+gatk --java-options "-Xmx48g" GenotypeGVCFs -R ./genome.fasta -V gendb://7_GenomicsDBImport_out/$f.db -O ./8_genotypeGVCFs/$f.vcf.gz 
+echo "Finishing $f"
+done
+
+# Merging VCFs (step 9)
+gatk MergeVcfs I=seq.path.list O=9_merged.vcf.gz
+```
+
+The final output is called `9_merged.vcf.gz`, and for a real dataset, this can be a big file (tens to hundreds of Gb). 
 
 ___
 
@@ -384,18 +391,19 @@ make install
 
 Did it work? Sometimes it can be hard to figure out what error messages mean during installs. But in the error message above you should probably see a couple things mentioned: pkgconf and zlib. These are various compilers and other nitty gritty computer science dependencies of vcftools. Once you get used to seeing some of these names, you can often figure out if a cluster has other versions of the dependencies that might work better with vcftools. Let's search around and see if anything works.
 
-3. Run the following: 
+4. Run the following: 
 ```
 module spider pkgconf
 module spider zlib
 module load pkgconf-1.7.4-gcc-8.4.1-h4hnvr7
 module load zlib-1.2.11-gcc-8.4.1-b4szoqs
 ```
-4. Repeat `3.`
-5. Add the `bin` folder to your ~/.bash_profile
+5. Repeat `3.`
+6. Add the `bin` folder to your ~/.bash_profile
 
 
-To get something meaningful, let's run this 4 individual, 1M reads datasets and we can talk about it as a group.
+Finally, let's filter this 4 individual, 1M reads dataset and we can talk about it as a group:
 ```
-/scratch/jdu282/vcftools/bin/vcftools --vcf 9_merged.vcf --remove-indels --max-missing 1.0 --minDP 2 --recode --out 9_merged_0miss_minDP2.vcf
+vcftools --vcf 9_merged.vcf --remove-indels --max-missing 1.0 --minDP 2 --recode --out 9_merged_0miss_minDP2.vcf
 ```
+

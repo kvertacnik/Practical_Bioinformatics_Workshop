@@ -1,8 +1,8 @@
 # Introduction to Tidyverse
 
 ## Getting started
-If you do not already have R, download it [here](https://cran.rstudio.com/) <br>
-Download RStudio [here](https://posit.co/download/rstudio-desktop/)
+If you do not already have R, download it [here](https://cran.rstudio.com/). <br>
+Download RStudio [here](https://posit.co/download/rstudio-desktop/).
 
 A helpful (and free) resource is ["R for Data Science" (2nd edition)](https://r4ds.hadley.nz/)
 
@@ -12,106 +12,15 @@ We'll be working in RStudio, an integrated development environment (IDE) that am
 <p align="left">
   <img src="assets/tidyverse/Rstudio.png" width="100%">
 </p>
+___
 
-
-### R projects
-An R project keeps all the files associated with a project together (e.g., scripts, data, output figures). Projects have a project-specific folder with an .Rproj file that automatically launches RStudio, sets the working directory to the project folder, and reopens the environment to where you left off (including variables and any open files).
-
-**_Task:_** Make a new project by following the steps below:
-<p align="left">
-  <img src="assets/tidyverse/Rstudio_Rproject_1.png" width="39%">
-  <img src="assets/tidyverse/Rstudio_Rproject_2.png" width="40%">
-  <img src="assets/tidyverse/Rstudio_Rproject_3.png" width="39%">
-  <img src="assets/tidyverse/Rstudio_Rproject_4.png" width="40%">
-</p>
-
-Launch the project by going to the project directory and clicking on the .Rproj file. Your RStudio screen should look like this:
-<p align="left">
-  <img src="assets/tidyverse/Rstudio_Rproject_5.png" width="40%">
-</p>
-
-
-### R Notebooks
-R Notebooks are a type of R Markdown file. From ["R for Data Science" (1st edition)](https://r4ds.had.co.nz/r-markdown.html):
-<p align="left">
-  <img src="assets/tidyverse/Rmarkdown_description.png" width="100%">
-</p>
-
-Basically, it's a convenient way to document and share your work.
-
-**_Task:_** Create a new notebook:
-<p align="left">
-  <img src="assets/tidyverse/Rstudio_Rnotebook_1.png" width="60%">
-</p>
-
-Notebook structure:
-<p align="left">
-  <img src="assets/tidyverse/Rstudio_Rnotebook_2.png" width="100%">
-</p>
-
-
-Code chunks start with `` ```{r}  `` and end with `` ``` ``. To run a code chunk, press the green arrow at the right end of the chunk or place the cursor anywhere in the chunk and press Ctrl/Cmd + Shift + Enter. To run a specific line of code, place the cursor on the desired line and press Ctrl/Cmd + Enter.
-
-**_Task:_** Run the default code chunk in your notebook. A graph should appear below the code chunk.
-
-
-By default, an HTML version of the notebook is saved with the .Rmd notebook file.
-
-**_Task:_**  View your notebook in HTML. Save the notebook and then open the project folder (hint: use the "Files" tab in the lower right of the RStudio screen). The folder should have a file with the same name as your notebook but ending in `nb.html`. Click on the nb.html file and it will open in a web browser.
-
-Why do I care about an HTML version of my notebook? Because everyone can access a web browser. This makes it easy to share your results and furthermore, the notebook can be downloaded from the HTML file.
-<p align="left">
-  <img src="assets/tidyverse/Rnotebook_html.png" width="100%">
-</p>
-
-Text in an .Rmd file text is plain text formatted, however, we can write the text in [markdown format](https://www.markdownguide.org/basic-syntax/) which adds formatting (bold, italics, tables, links, etc.) when the .Rmd file is rendered in HTML.
-<p align="left">
-  <img src="assets/tidyverse/markdown.png" width="100%">
-</p>
-
-
-### R Packages
-R packages are another way to share code and data. How a package is installed depends on where it is available.
-
-First, is the package on CRAN (Comprehensive R Archive Network)?
-
-**_Task:_**  Install the Tidyverse R package from CRAN. <br>
-* To use the RStudio interface, in the lower right of the RStudio screen, click on the "Packages" tab, click on the "Install" tab, search for "Tidyverse", then click "Install"
-<p align="left">
-  <img src="assets/tidyverse/install.png" width="70%">
-  <br>
-  <img src="assets/tidyverse/install_tidyverse.png" width="50%">
-</p>
-
-* Alternatively, to install packages from the console, run:
-```
-install.packages("tidyverse")
-```
-<br>
-
-Second, is the package not on CRAN but is on Github? This will require the `devtools` package which you may need to install first (hint: this package is on CRAN).
-
-```
-load(devtools)
-install_github("DeveloperName/PackageName")
-```
-
-NB: When installing a package from the console, the package name must be in quotes. Once installed, the package can be called without quotes. 
-
-
-Packages are installed once, but they need to be loaded prior to use. In an R Notebook, it is good practice to have the first code chunk be the one that loads all necessary packages.
+## Tidy data with tidyr
 
 **_Task:_** Load Tidyverse into your environment.
 ```
 library(tidyverse)
 ```
-<br>
 
-Packages typically come with documentation. To learn more about a package, search the `help` tab in the lower right of the RStudio screen or run `?packageName` in the console.
-
-___
-
-## Tidy data with tidyr
 The [Tidyverse](https://www.tidyverse.org/) is “an opinionated collection of R packages designed for data science. All packages share an underlying design philosophy, grammar, and data structures.”
 
 Practically, it is a group of R packages for data manipulation, exploration, and visualization.
