@@ -25,7 +25,7 @@ _**Task:**_ This approach requires a few special items in the job submission fil
 #SBATCH --job-name=1_fastp    # Base name for the job submission file, and all related files
 #SBATCH --nodes=1        
 #SBATCH --ntasks=20      
-#SBATCH --account=coa_jdu282_brazil_bootcamp2023  
+#SBATCH --account=cea_kdu224_iceland_bootcamps2024
 #SBATCH --partition=normal
 #SBATCH --mail-type ALL    
 #SBATCH --mail-user your_email_address
@@ -224,7 +224,7 @@ First, we have a header file. You can see it's basically the header from job_hea
 #SBATCH --job-name=6_gatk_hapcaller
 #SBATCH --nodes=1
 #SBATCH --ntasks=20
-#SBATCH --account=coa_jdu282_brazil_bootcamp2023
+#SBATCH --account=cea_kdu224_iceland_bootcamps2024
 #SBATCH --partition=normal
 #SBATCH --mail-type ALL
 #SBATCH --mail-user <your email address>
@@ -402,8 +402,27 @@ module load zlib-1.2.11-gcc-8.4.1-b4szoqs
 6. Add the `bin` folder to your ~/.bash_profile
 
 
-Finally, let's filter this 4 individual, 1M reads dataset and we can talk about it as a group:
+Finally, let's filter your 4 individual, 1M reads dataset and we can talk about it as a group:
+1. In your dorsalis_WGS folder make a copy of your job_header_gatk.sh file named `9_filter_VCF.sh`
+2. Change the job name to `#SBATCH --job-name=9_filter_VCF_0miss_minDP2`
+3. Change the number of processors to 1 `#SBATCH --ntasks=1`
+3. Add the job commands to the end of the file and submit:
 ```
-vcftools --vcf 9_merged.vcf --remove-indels --max-missing 1.0 --minDP 2 --recode --out 9_merged_0miss_minDP2.vcf
+vcftools --gzvcf 9_merged.vcf.gz --remove-indels --max-missing 1.0 --minDP 2 --recode --out 9_merged_0miss_minDP2.vcf
 ```
+
+In the sbatch .err file, vcftools summarizes what it did. It should look something like this:
+```
+After filtering, kept 100 out of 100 Individuals
+Outputting VCF file...
+After filtering, kept 5245 out of a possible 25690005 Sites
+```
+
+Another common filtering step is to remove individuals with excessive missing data. We won't do that here but check out the `--missing-indv` option in the [vcftools manual](https://vcftools.sourceforge.net/man_latest.html).
+
+NB: Because I forget things a lot, I find it helpful to include the number of individuals and snps in the vcf file name, e.g., 9_merged_4ind_920snps_0miss_minDP2.vcf
+
+
+<br>
+This is the end of the pipeline. The final file `9_merged_0miss_minDP2.vcf` is what you will use for section 7.
 

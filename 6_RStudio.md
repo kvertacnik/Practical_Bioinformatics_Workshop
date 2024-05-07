@@ -169,7 +169,31 @@ Packages typically come with documentation. To learn more about a package, searc
 
 ___
 
-## Loading files
+## Some R basics
+### Variables
+
+
+
+### Functions
+In general, functions in R follow this format:
+```
+function()
+```
+Where "function" is the name of whatever function/operation you're doing and within the parentheses you spell out all of the parameters, inputs/outputs, and options for the given function.
+
+If you're not sure what options a function has, you can do the following:
+```
+??function
+```
+This will open up a web browser and get you to an info page about functions (you will have to click on the individual function in question in the browser to get to the info page; if there are multiple functions with the same name (i.e. from different libraries), you'll have to pick the right one from the list that pops up in your browser).
+
+
+
+
+
+
+
+### Loading files
 To load any type of data, you need to use a function that can read the data type (table, csv, etc.) and save the information as a data object.
 ```
 my_data <- read_function(data_file_location, function options)

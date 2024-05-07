@@ -281,3 +281,7 @@ It gets the number of characters for each item in the search.txt list.
 Each item in search.txt is printed to the screen, but because we're using a pipe, the output is passed to the  `wc -c`  command which counts the number of characters.
 
 </details>
+
+___
+## Summary
+

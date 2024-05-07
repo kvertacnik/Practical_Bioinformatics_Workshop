@@ -3,9 +3,16 @@
 ![ssh](assets/command_line/ssh.png)
 
 ## Connect
-`ssh` (secure shell) establishes a connection from your computer to the cluster. You must have an account on the cluster in order to log in.
+`ssh` (secure shell) establishes a connection from your computer to the cluster. You must have an account on the cluster before logging in.
 
-On your computer run `ssh user_name@mcc-dtn.ccs.uky.edu` 
+First, launch the GlobalProtet VPN and login.
+<p align="left">
+  <img src="assets/command_line/globalprotect.png" width="10%">
+</p>
+
+
+On your computer, open Terminal and run `ssh user_name@mcc.uky.edu` <br>
+If you have a cluster account but no VPN access, run `ssh user_name@mcc-dtn.ccs.uky.edu` (this connection is slower).
 
 The first time you connect to the cluster, you will get a message like this; type `yes` to continue.
 
@@ -15,9 +22,9 @@ The first time you connect to the cluster, you will get a message like this; typ
 
 After successfully logging in, the command line prompt will change to show that. It should look something like this `[user_name@mcc-login001 ~]$`
 
-To disconnect from MCC, run `exit`
+To disconnect from the cluster, run `exit`
 
-NB: Once you connect, you will be working with two computers: your local computer and the remote cluster. When running commands, pay attention to where your working directory is located (i.e., which computer you are working on.)
+NB: Once you connect, you will be working with two computers: your local computer and the remote cluster. When running commands, **pay attention to where your working directory is located** (i.e., which computer you are working on.)
 
 ___
 
@@ -119,7 +126,7 @@ NB: Notification emails often end up in spam/junk folders.
 #SBATCH --time 01-00:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks=32
-#SBATCH --account=coa_jdu282_brazil_bootcamp2023
+#SBATCH --account=cea_kdu224_iceland_bootcamps2024
 #SBATCH --mail-type ALL
 #SBATCH --mail-user <your email address>
 ```
@@ -152,7 +159,7 @@ Now let's create a job file and submit a command that we can watch as it progres
 #SBATCH --time 01:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --account=coa_jdu282_brazil_bootcamp2023
+#SBATCH --account=cea_kdu224_iceland_bootcamps2024
 #SBATCH --mail-type ALL
 #SBATCH --mail-user <your email address>
 
@@ -215,8 +222,15 @@ These are like modules. The full list of singularity programs is [here](https://
 This is how you would call a singularity in a job script:
 ```
 container=/from/container_name_and_location/column
-singularity run --app app_name_from_the_second_column $container program_commands
+singularity run --app app_name_from_the_second_column $container program_name program_commands
 ```
+
+So for example:
+```
+container=/share/singularity/images/ccs/conda/amd-conda1-centos8.sinf
+singularity run --app blast2120 $container blastn -db Oki_v1_blastDB -query Oki_200bp_range.fasta -out Oki_aam_blastn.out -outfmt 0 -evalue 0.1
+```
+
 ___
 
 ## Getting data for read mapping and SNP calling with GATK
