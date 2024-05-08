@@ -5,7 +5,7 @@
 ## Connect
 `ssh` (secure shell) establishes a connection from your computer to the cluster. You must have an account on the cluster before logging in.
 
-First, launch the GlobalProtet VPN and login.
+First, launch the GlobalProtet VPN and log in with your linkblue ID.
 <p align="left">
   <img src="assets/command_line/globalprotect.png" width="10%">
 </p>
@@ -108,7 +108,7 @@ Optional
 #SBATCH --mail-user=        # Your email address
 ```
 
-NB: A hash character followed by a space `# ` means "do not execute anything on this line after this symbol". It's a way to leave comments that won't interfere with the code.
+NB: The hash character `#`  is used to mark the start of a comment, meaning that anything following this character on the same line is ignored (i.e., not executed). It's a way to leave comments that won't interfere with the code. Loosely speaking, #!/bin/bash and #SBATCH are exceptions to this rule.
 
 To see what types of processors are available run `sinfo`
 <p align="left">
@@ -133,7 +133,7 @@ NB: Notification emails often end up in spam/junk folders.
 
 To submit a job run `sbatch your_job_script.sh`
 
-Once you submit a job, you can check its status with `squeue | grep "mcc_user_name"`. If all processors are in use, your job will wait until resources are available; `TIME 0:00` means your job has not started.
+Once you submit a job, you can check its status with `squeue | grep "user_name"`. If all processors are in use, your job will wait until resources are available; `TIME 0:00` means your job has not started.
 
 ![squeue example](assets/command_line/squeue.png)
 
@@ -151,7 +151,8 @@ ___
 ## Submit your first cluster job!
 Now let's create a job file and submit a command that we can watch as it progresses. 
 
-1. Create a new file named counting.sh (`nano counting.sh`), and paste the following into it:
+1. Create a new file named counting.sh `nano counting.sh`
+2. Paste the following:
 
 ```
 #!/bin/bash
@@ -181,12 +182,12 @@ echo "it's been 71 seconds. What are we deviating from 5 second intervals???"
 
 Once the job is submitted, check that it's running by using `squeue`. Lots of stuff, right? That output is a list of all the jobs that are currently running on the cluster. We can subset that in two ways. First, we could just grep our username:
 ```
-squeue | grep "mcc_user_name"
+squeue | grep mcc_user_name
 ```
 
 Or you can use an option in squeue:
 ```
-squeue -u "mcc_user_name"
+squeue -u mcc_user_name
 ```
 
 Let's check on the status of the job. Standard out (stdout) for computers is the normal output of a command. Standard error (stderr) is any error messages that arise from a command. The default location for stdout when MCC is running a job is in a file called `slurm-jobID.out`. 
@@ -228,7 +229,7 @@ singularity run --app app_name_from_the_second_column $container program_name pr
 So for example:
 ```
 container=/share/singularity/images/ccs/conda/amd-conda1-centos8.sinf
-singularity run --app blast2120 $container blastn -db Oki_v1_blastDB -query Oki_200bp_range.fasta -out Oki_aam_blastn.out -outfmt 0 -evalue 0.1
+singularity run --app blast2120 $container blastn -db blast_database -query search.fasta -out blast_alignment.out
 ```
 
 ___
@@ -243,33 +244,47 @@ Our data is from this [BioProject](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA
 
 To download from NCBI, we need to use the program [SRAtoolkit](https://github.com/ncbi/sra-tools/wiki/01.-Downloading-SRA-Toolkit). It's already installed at `/scratch/kdu224/bioinf_2024/programs/sratoolkit.3.1.0-ubuntu64/`
 
-A list of the SRA accessions is on the cluster at `/scratch/kdu224/bioinf_2024/data/Bdor_WGS_SRA_list.txt`
+A list of the SRA accessions is in the courese data folder at `/scratch/kdu224/bioinf_2024/data/Bdor_WGS_SRA_list.txt`
 
 1. Go to your personal directory on the cluster.
-2. You were all assigned a set of four samples, to get a file with those accession values run `sed -n '<lower_number>,<upper_number>' /scratch/kdu224/bioinf_2024/data/Bdor_WGS_SRA_list.txt > SRA_accessions.txt` <br>
-Note that the sed command should look something like `sed -n '20,24'`
-3. Make a copy of your job script template `cp job_header.sh SRA_download.sh`
+2. You were all assigned a set of four samples, to get a file with those accession values run: 
+```
+sed -n '<lower_number>,<upper_number>' /scratch/kdu224/bioinf_2024/data/Bdor_WGS_SRA_list.txt > SRA_accessions.txt
+
+# This command is all one line
+# The sed command should look something like this: sed -n '20,24'
+```
+
+3. Make a copy of your job script template file and name it `SRA_download.sh`
+```
+cp job_header.sh SRA_download.sh
+```
 4. Open SRA_download.sh in nano (`nano SRA_download.sh`) and add the following after the header (I suggest using copy-and-paste):
 ```
 for f in `cat SRA_accessions.txt`; do /scratch/kdu224/bioinf_2024/programs/sratoolkit.3.1.0-ubuntu64/bin/prefetch $f; /scratch/kdu224/bioinf_2024/programs/sratoolkit.3.1.0-ubuntu64/bin/fasterq-dump --outdir fastq --skip-technical --threads 32 $f/$f.sra; rm -rf $f; done
 ```
 
-5. Save your file (`control + x`) and submit your job `sbatch SRA_download.sh`. Assuming the job starts right away, it will take about 10 minutes and you should have a new folder named "fastq".
+5. Save and exit nano (`control + x`)
+6. Submit your job `sbatch SRA_download.sh`. Assuming the job starts right away, it will take about 10 minutes and you should have a new folder named "fastq".
 
 ___
 
 ### **_Task:_** Subsample sequencing read files
 The sequence files have ~20-30 million reads. To speed up analysis time, let's subsample them down to 1 million reads. This way, we'll have enough time for the entire genotyping pipeline, but it will obviously affect the final SNP dataset that we obtain at the end.
 
-1. In your personal directory on the cluster, make a copy of your job script template `cp job_header.sh SRA_subsample.sh`
+1. In your personal directory on the cluster, make a copy of your job script template file and name it `SRA_subsample.sh`
+```
+cp job_header.sh SRA_subsample.sh
+```
 2. Open SRA_subsample.sh (`nano SRA_subsample.sh`) and change `#SBATCH --ntasks=32` to `#SBATCH --ntasks=1`
 3. Add the following after the header (don't forget to update the SRA_accessions.txt path with your specific information):
 ```
 cd fastq
 
-for f in `cat /path/to/SRA_accessions.txt`; do head -n 4000000 "$f"_1.fastq > "$f".1Mreads.R1.fastq; head -n 4000000 "$f"_2.fastq > "$f".1Mreads.R2.fastq; done
+for f in `cat /path/to/your/SRA_accessions.txt`; do head -n 4000000 "$f"_1.fastq > "$f".1Mreads.R1.fastq; head -n 4000000 "$f"_2.fastq > "$f".1Mreads.R2.fastq; done
 ```
-4. Save your file (`control + x`) and submit your job `sbatch SRA_subsample.sh`. Assuming the job starts right away, it will take about 10 seconds.
+4. Save and exit nano (`control + x`) 
+5. Submit your job `sbatch SRA_subsample.sh`. Assuming the job starts right away, it will take about 10 seconds.
 
 **_Question:_** Can you follow what's going on in this job? Why are we getting 4000000 lines per file? And what does the `>` do?
 
@@ -283,3 +298,11 @@ In a fastq file, each sequencing read is four lines long, so to subset 1 million
 The `>` is redirecting the output from the `head` command to the subsample read file.
 
 </details>
+
+___
+
+## Summary
+* Logging onto the computing cluster
+* Up/downloading files from your local computer to the cluster
+* Submitting jobs on the cluster
+* In preparation for genotyping, we downloaded sequencing files from NCBI

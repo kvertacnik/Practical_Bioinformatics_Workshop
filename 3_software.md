@@ -8,13 +8,13 @@ A program's **source code** is the human-readable instruction set that programme
 Programming languages can be broadly categorized into two types based on how they convert source code into binary.
 * An interpreted language (e.g., Python, R) uses an interpreter which reads the source code line by line and executes each line as it is read. The interpreter translates the source code into machine code at runtime. 
 
-* A compiled language (e.g., C, C++) is converted into machine code before runtime. During "compiling", a compiler program converts the source code into an executable file that can be run on the target machine. The compiled code is optimized for the specific hardware and operating system of the machine on which it is intended to run.
+* A compiled language (e.g., C, C++) is converted into machine code before runtime. During "compiling", a compiler program converts the source code into an executable file. The compiled code is optimized for the specific hardware and operating system of the machine on which it is intended to run, e.g., macOS with Intel processor.
 
 ### Compiled languages: installing from source code
 1. Download the software package. They are often compressed in `.tar.gz` or `.gz` format; use `tar -xvf package.tar.gz` or `gunzip package.gz` to decompress.
 2. Go into the decompressed source code folder. There should be a file named "configure".
 3. In the source code folder, run `./configure` <br>
-   If you do not have permission to install programs, list a path to where you can install programs <br>
+   If you do not have permission to install programs, list a path to where you do have permission <br>
    `./configure --prefix=/installation/folder` <br>
    
 4. In the source code folder, run `make`
@@ -54,7 +54,8 @@ export PATH=$PATH:/path/to/program/directory/
 3. Save and exit nano `control + x`
 4. Refresh your command line shell by running `source ~/.bash_profile`
 
-Do not add the program itself to the path, just the directory the contains the program.
+Do not add the program itself to the path, just the directory the contains the program. <br>
+The way $PATH works is that it tells the computer what directories to look in, not where to find specific files.
 
 ___
 
@@ -171,7 +172,7 @@ export PATH=$PATH:/scratch/kdu224/bioinf_2024/students/user_name/programs/gatk-4
 ```
 
 
-GATK uses a Java wrapper to call commands, so instead of calling a .jar file, as you often do with java tools (e.g. `java --jar file.jar`), we can just call the wrapper as long as java is functioning (i.e., we need to load the cluster's Java module). We also need to load python (as of April 2024).
+GATK uses a Java wrapper to call commands, so instead of calling a .jar file, as you often do with java tools (e.g. `java --jar file.jar`), we can just call the wrapper as long as java is functioning (i.e., we need to load the cluster's Java module). We also need to load python.
 
 ```
 module load ccs/java/jdk-17.0.2
@@ -269,3 +270,13 @@ The reference is the class (u, g, or o). The operator adds (+), removes (-) or e
 For example, let's say we wanted to add user execute permissions to "file1". We would run `chmod u+x file1`
 
 For more information see [here](https://kb.iu.edu/d/abdb).
+
+
+___
+
+## Summary
+* How to install compiled programs from source code
+* How to install executables and pre-compiled binaries
+* ~/.bash_profile
+* Conda
+* In preparation for genotyping, we installed the programs fastp, BWA2, bamUtil, samtools, and GATK

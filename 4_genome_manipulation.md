@@ -124,23 +124,12 @@ Give it a try with seqtk. A couple things to NOTE:<br>
 ### bash_profile
 The permanent solution is to add that export path command to a file named `.bash_profile` in your home directory. We will need to generate it manually. The `.` makes the file invisible to keep you from accidentally deleting it. <br>
 1. Create/open your bash_profile file: `nano ~/.bash_profile` <br>
-(tilde `~/` is a nice shortcut for your home directory, so is $HOME; both are shorter than doing cd /home/[username]).
-2. Add this to be beginning of the file:
-```
-# .bash_profile
-
-# User specific environment and startup programs
-	
-# Get the aliases and functions
-if [ -f ~/.bashrc ]; then
-	. ~/.bashrc
-fi
-```
-3. At the bottom of the file add the `export PATH` command that you used before. 
+(tilde `~/` is a nice shortcut for your home directory, so is $HOME; both are shorter than doing cd /home/username/.bash_profile).
+2. At the bottom of the file add the `export PATH` command that you used before. 
 ```
 export PATH=$PATH:/path/to/your/seqtk/installation/directory/
 ```
-4. Save and exit nano (`control + x`)
+3. Save and exit nano (`control + x`)
 
 Now every time you log into this cluster, the system looks in this file and adds all those locations with `export PATH` lines to your PATH. This essentially creates a permanent solution for adding locations to PATH. 
 
@@ -211,3 +200,7 @@ Finally the temp file is deleted.
 <br>
 
 4. Check that the final version of the assembly has six fasta sequences named Chromosome1-6 (hint: use one the grep commands we used earlier)
+___
+
+## Summary
+* In preparation for genotyping, we downloaded the reference genome, extracted only the chromosome sequences, and renamed the fasta headers.

@@ -181,7 +181,7 @@ wc -w log.txt    # Counts how many words are in the file
 `grep` searches every line in the file for word(s) that you provide (the pattern). If a line has a matching pattern, grep will print that line; grep only searches for text and cannot make edits.
 
 The grep format is `grep [OPTIONS] "search_word" file_to_search` <br>
-The search_word must be in quotes and is case-sensitive.
+The search_word is case-sensitive. It should be in quotes so that it is not mistaken for a command.
 
 **_Task:_** We want to know how many ERROR events are in log.txt. We can:
 1. Print every line with the word "ERROR" `grep "ERROR" log.txt`
@@ -256,14 +256,18 @@ Note that `>` redirects output to a new file while `>>` appends output to an exi
 
 **_Task:_** In log.txt, replace the words "INFO" and "ERROR" with the word "okay", but this time "INFO" and "ERROR" will be read from a file.
 
-1. In nano, make a new text file named "search.txt" and list "INFO" and "ERROR" in a column like this:
+1. In your "examples" directory make a new text file `nano search.txt`
+2. List "INFO" and "ERROR" in a column like this:
 ```
 ERROR
 INFO
 ```
-2. Save and close nano. Then run: <br>
-``for item in `cat search.txt`; do sed "s/$item/okay/g" log.txt > log_edited2.txt; done``
-3. Compare the contents of log_edited1.txt and log_edited2.txt.
+3. Save the file and exit nano `control+x`
+4. Then run: 
+```
+for item in `cat search.txt`; do sed "s/$item/okay/g" log.txt > log_edited2.txt; done
+```
+5. Compare the contents of log_edited1.txt and log_edited2.txt.
 
 A few things to note:
 * The backtick character `` ` `` lets us call a function within another command. 
@@ -283,5 +287,9 @@ Each item in search.txt is printed to the screen, but because we're using a pipe
 </details>
 
 ___
-## Summary
 
+## Summary
+* Paths
+* Command-line commands
+* Nano text editor
+* For loops
