@@ -206,7 +206,7 @@ A plot should appear that looks like this
 
 Let's think about these PCs a bit. So remember that the PCs are basically imaginary axes of variation in multivariate data. So these axes represent imaginary ranges of variation when you consider all the loci at once. PC1 explains the most variation, PC2 the second most, etc. etc.
 
-In this plot the x-axis are the principal component dimensions and the y-axis is how much of the variance they contain. To choose the number of principal components, I look for where additional PCs start to have very similar amounts of variance (in this case around PC5), or you could choose as many PCs as you want to explore.
+In this plot the x-axis are the principal component dimensions and the y-axis is how much of the variance they contain. To choose the number of principal components, I look for where additional PCs start to contribute negligible amounts of variance (in this case around PC5), or you could choose as many PCs as you want to explore.
 
 ```
 Select the number of axes: 
@@ -385,7 +385,7 @@ Now that we have locus Fst values, lets make a Manhattan plot, which plots the l
 Download the .weir.fst file to your R Project folder.
 
 In RStudio, run
-
+```
 library(qqman)
 
 #set the working directory
@@ -449,7 +449,6 @@ manhattan(fst,chr='CHROM',bp='POS',
 
 
 ## How to convert from VCF to STRUCTURE format
-We will use several programs that require data to be in STRUCTURE format (.str or .stru).
 
 Download our VCF file
 
