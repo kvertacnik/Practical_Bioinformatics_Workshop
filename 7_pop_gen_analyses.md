@@ -87,8 +87,7 @@ These are allele counts, so if you look at the row for individual N224, you can 
 ___
 
 ## Load STRUCTURE file into adegenet
-Ok, now onto another big task in doing this kind of analysis. Dealing with data that isn't already loaded into R! 
-We'll be working with microsatellite genotype data from swallowtail butterflies in Alberta (AB) and British Columbia (BC) Canada, however, you would use the same steps for SNP data.
+Ok, now onto another big task in doing this kind of analysis. Dealing with data that isn't already loaded into R! We'll be working with microsatellite genotype data from swallowtail butterflies in Alberta (AB) and British Columbia (BC) Canada, however, you would use the same steps for SNP data.
 
 Note: We'll focus on .str format, but realize there are a bunch of other formats for microsatellite genotypes (genepop, FSTAT, etc.). <See converting file section>
 
@@ -352,7 +351,7 @@ Well that didn't work, and the error message isn't terribly informative. If you 
 Fst(as.loci(nancycats))
 ```
 
-#From both of those manual pages, you can see both hierfstat and pegas are calculating Weir and Cockerham's FST, so theoretically those outputs should be the same. Let's see if we can isolate the FST values from the rest of the output from those two functions and compare them in a scatterplot like we did with heterozygosity last week. Try this out on your own and when everyone's to this point we can work through it together on the screen.
+From both of those manual pages, you can see both hierfstat and pegas are calculating Weir and Cockerham's FST, so theoretically those outputs should be the same. Let's see if we can isolate the FST values from the rest of the output from those two functions and compare them in a scatterplot like we did with heterozygosity last week. Try this out on your own and when everyone's to this point we can work through it together on the screen.
 ```
 plot(Fst(as.loci(nancycats))[,2], wc(nancycats)$per.loc$FST)
 ```
@@ -411,9 +410,12 @@ fst$SNP <- paste('SNP',1:length_)
 manhattan(fst,chr='CHROM',bp='POS',
           p="WEIR_AND_COCKERHAM_FST",snp='SNP',
           logp=FALSE,ylab='WEIR AND COCKERHAM_FST',xlab='CHR')
+```
 
+This...doesn't look like what you see in publications. Our VCF file only had 5245 snps. Let's remake the Manhattan plot with a VCF file that was filtered less stringently `9_merged_0.5miss_minDP1_100ind_257618snps.vcf`
 
-
+Here are some options for your Manhattan plot:
+```
 #change the colors of the plot
 manhattan(fst,chr='CHROM',bp='POS',
           p="WEIR_AND_COCKERHAM_FST",snp='SNP',col=c("blue", "orange"),
@@ -447,10 +449,11 @@ manhattan(fst,chr='CHROM',bp='POS',
           logp=FALSE,ylab='WEIR AND COCKERHAM_FST',xlab='CHR',highlight=snps_of_interest)
 ```
 
+___
 
 ## How to convert from VCF to STRUCTURE format
 
-Download our VCF file
+Download our VCF file `9_merged_0miss_minDP2_100ind_5245snps.vcf`
 
 Let's use [PGDSpider](http://cmpg.unibe.ch/software/PGDSpider/index.htm) to convert our VCF file.
 
