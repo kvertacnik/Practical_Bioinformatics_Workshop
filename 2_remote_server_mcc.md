@@ -20,9 +20,12 @@ The first time you connect to the cluster, you will get a message like this; typ
   <img src="assets/command_line/host_authentication.png" width="75%">
 </p>
 
+It will then ask for your password. Type it in but note that nothing will show up on the screen.
+
+
 After successfully logging in, the command line prompt will change to show that. It should look something like this `[user_name@mcc-login001 ~]$`
 
-To disconnect from the cluster, run `exit`
+To disconnect from the cluster, run `exit`. Don't forget to close the VPN.
 
 NB: Once you connect, you will be working with two computers: your local computer and the remote cluster. When running commands, **pay attention to where your working directory is located** (i.e., which computer you are working on.)
 
@@ -30,7 +33,7 @@ ___
 
 ## Make your working directory on MCC
 1. After logging on to MCC, go to our course directory <br>
- `cd /scratch/kdu224/bioinf_2024/`
+ `cd /pscratch/kdu224_iceland_bootcamps2024`
 
 2. View the contents of the class directory with `ls`
 
@@ -242,14 +245,14 @@ We're going to use Bactrocera dorsalis (oriental fruit fly) whole-genome sequenc
 ### **_Task:_** Get sequencing read files
 Our data is from this [BioProject](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA893460/). We need to download shotgun reads for multiple individuals, which is a repetitive task (and the perfect opportunity to use a for loop!).
 
-To download from NCBI, we need to use the program [SRAtoolkit](https://github.com/ncbi/sra-tools/wiki/01.-Downloading-SRA-Toolkit). It's already installed at `/scratch/kdu224/bioinf_2024/programs/sratoolkit.3.1.0-ubuntu64/`
+To download from NCBI, we need to use the program [SRAtoolkit](https://github.com/ncbi/sra-tools/wiki/01.-Downloading-SRA-Toolkit). It's already installed at `/pscratch/kdu224_iceland_bootcamps2024/programs/sratoolkit.3.1.0-ubuntu64/`
 
-A list of the SRA accessions is in the courese data folder at `/scratch/kdu224/bioinf_2024/data/Bdor_WGS_SRA_list.txt`
+A list of the SRA accessions is in the courese data folder at `/pscratch/kdu224_iceland_bootcamps2024/data/Bdor_WGS_SRA_list.txt`
 
 1. Go to your personal directory on the cluster.
 2. You were all assigned a set of four samples, to get a file with those accession values run: 
 ```
-sed -n '<lower_number>,<upper_number>' /scratch/kdu224/bioinf_2024/data/Bdor_WGS_SRA_list.txt > SRA_accessions.txt
+sed -n '<lower_number>,<upper_number>' /pscratch/kdu224_iceland_bootcamps2024/data/Bdor_WGS_SRA_list.txt > SRA_accessions.txt
 
 # This command is all one line
 # The sed command should look something like this: sed -n '20,24'
@@ -261,7 +264,7 @@ cp job_header.sh SRA_download.sh
 ```
 4. Open SRA_download.sh in nano (`nano SRA_download.sh`) and add the following after the header (I suggest using copy-and-paste):
 ```
-for f in `cat SRA_accessions.txt`; do /scratch/kdu224/bioinf_2024/programs/sratoolkit.3.1.0-ubuntu64/bin/prefetch $f; /scratch/kdu224/bioinf_2024/programs/sratoolkit.3.1.0-ubuntu64/bin/fasterq-dump --outdir fastq --skip-technical --threads 32 $f/$f.sra; rm -rf $f; done
+for f in `cat SRA_accessions.txt`; do /pscratch/kdu224_iceland_bootcamps2024/programs/sratoolkit.3.1.0-ubuntu64/bin/prefetch $f; /pscratch/kdu224_iceland_bootcamps2024/programs/sratoolkit.3.1.0-ubuntu64/bin/fasterq-dump --outdir fastq --skip-technical --threads 32 $f/$f.sra; rm -rf $f; done
 ```
 
 5. Save and exit nano (`control + x`)

@@ -329,7 +329,8 @@ done
 
 You can see in that first for loop, we're indexing each `g.vcf` file (this could be done as a separate step or after the code in the previous step), and then in the second for loop (this one not in 1-line format and with some extra `echo`'s) we're creating the databases for each scaffold. 
 
-Finally, make a copy of your `list.sample_map` file and place it in `/scratch/kdu224/bioinf_2024/sample_maps`. I will create a final VCF file that has everyone's samples for us to look at later. 
+
+**Finally, make a copy of your `list.sample_map` file and place it in `/pscratch/kdu224_iceland_bootcamps2024/sample_maps`. I will create a final VCF file that has everyone's samples for us to look at.**
 
 ___
 
@@ -420,9 +421,12 @@ After filtering, kept 5245 out of a possible 25690005 Sites
 
 Another common filtering step is to remove individuals with excessive missing data. We won't do that here but check out the `--missing-indv` option in the [vcftools manual](https://vcftools.sourceforge.net/man_latest.html).
 
-NB: Because I forget things a lot, I find it helpful to include the number of individuals and snps in the vcf file name, e.g., 9_merged_4ind_920snps_0miss_minDP2.vcf
+This is the end of our pipeline. The final product is your filtered VCF file `9_merged_0miss_minDP2.vcf`
 
 
-<br>
-This is the end of the pipeline. The final file `9_merged_0miss_minDP2.vcf` is what you will use for section 7.
+NB: Because I forget things a lot, I find it helpful to include the number of individuals and snps in the vcf file name, e.g., 9_merged_4ind_5245snps_0miss_minDP2.vcf
 
+___
+
+## Summary
+* We used whole-genome sequencing data to call SNPS from four _B. dorsalis_ samples. We filtered the genotypes to keep SNPS that had no missing data and a minimum depth of two reads.

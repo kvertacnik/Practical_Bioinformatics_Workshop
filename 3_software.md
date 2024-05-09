@@ -122,7 +122,7 @@ Add the executable to your path
 1. Open .bash_profile `nano ~./bash_profile`
 2. Add this line (update with your information):
 ```
-export PATH=$PATH:/scratch/kdu224/bioinf_2024/students/user_name/programs
+export PATH=$PATH:/pscratch/kdu224_iceland_bootcamps2024/students/user_name/programs
 ```
 3. Save and exit nano `control + x`
 
@@ -137,7 +137,7 @@ tar -xvf bwa-mem2-2.2.1_x64-linux.tar.bz2
 
 Add the path to the bwa-mem2-2.2.1_x64-linux directory to your ~/.bash_profile
 ```
-export PATH=$PATH:/scratch/kdu224/bioinf_2024/students/user_name/programs/bwa-mem2-2.2.1_x64-linux/
+export PATH=$PATH:/pscratch/kdu224_iceland_bootcamps2024/students/user_name/programs/bwa-mem2-2.2.1_x64-linux/
 ```
 
 
@@ -168,7 +168,7 @@ unzip gatk-4.5.0.0.zip
 
 Add the path to the gatk-4.5.0.0 directory to your ~/.bash_profile
 ```
-export PATH=$PATH:/scratch/kdu224/bioinf_2024/students/user_name/programs/gatk-4.5.0.0
+export PATH=$PATH:/pscratch/kdu224_iceland_bootcamps2024/students/user_name/programs/gatk-4.5.0.0
 ```
 
 
@@ -190,11 +190,11 @@ At this point your programs folder should have at least these files:
 
 Your ~/.bash_profile should look something like this:
 ```
-export PATH=$PATH:/scratch/kdu224/bioinf_2024/students/kim/programs/
+export PATH=$PATH:/pscratch/kdu224_iceland_bootcamps2024/students/kim/programs/
 
-export PATH=$PATH:/scratch/kdu224/bioinf_2024/students/kim/programs/bwa-mem2-2.2.1_x64-linux/
+export PATH=$PATH:/pscratch/kdu224_iceland_bootcamps2024/students/kim/programs/bwa-mem2-2.2.1_x64-linux/
 
-export PATH=$PATH:/scratch/kdu224/bioinf_2024/students/kim/programs/gatk-4.5.0.0/
+export PATH=$PATH:/pscratch/kdu224_iceland_bootcamps2024/students/kim/programs/gatk-4.5.0.0/
 ```
 
 These are the modules we will use:

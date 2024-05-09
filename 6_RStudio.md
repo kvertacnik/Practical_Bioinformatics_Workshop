@@ -5,7 +5,7 @@ Download RStudio [here](https://posit.co/download/rstudio-desktop/).
 
 We'll be working in RStudio, an integrated development environment (IDE) that among other things, has places to write and run code.
 <p align="left">
-  <img src="assets/R/Rstudio/Rstudio.png" width="100%">
+  <img src="assets/R/RStudio/RStudio.png" width="100%">
 </p>
 
 The upper-left panel is the code editor for writing and editing code.
@@ -29,20 +29,20 @@ An R project keeps all the files associated with a project together (e.g., scrip
 
 **_Task:_** Make a new R project in your "examples" folder (on your local computer) by following the steps below:
 <p align="left">
-  <img src="assets/R/Rstudio/Rstudio_Rproject_1.png" width="39%">
-  <img src="assets/R/Rstudio/Rstudio_Rproject_2.png" width="40%">
-  <img src="assets/R/Rstudio/Rstudio_Rproject_3.png" width="39%">
-  <img src="assets/R/Rstudio/Rstudio_Rproject_4.png" width="40%">
+  <img src="assets/R/RStudio/RStudio_Rproject_1.png" width="39%">
+  <img src="assets/R/RStudio/RStudio_Rproject_2.png" width="40%">
+  <img src="assets/R/RStudio/RStudio_Rproject_3.png" width="39%">
+  <img src="assets/R/RStudio/RStudio_Rproject_4.png" width="40%">
 </p>
 
 Once you create the project, the upper right corner of your RStudio screen should look like this:
 <p align="left">
-  <img src="assets/R/Rstudio/Rstudio_Rproject_5.png" width="39%">
+  <img src="assets/R/RStudio/RStudio_Rproject_5.png" width="39%">
 </p>
 
 The R project folder should have a .Rproj file with a cube icon. Whenever you want to work on this project, click on this icon and it will automatically launch RStudio, set the working directory to the project folder, and reopen the environment to where you left off including the files you had open.
 <p align="left">
-  <img src="assets/R/Rstudio/Rstudio_Rproject_6.png" width="40%">
+  <img src="assets/R/RStudio/RStudio_Rproject_6.png" width="40%">
 </p>
 
 ___
@@ -80,7 +80,7 @@ output: html_notebook
 ### File structure
 **_Task:_** Create a new notebook.
 <p align="left">
-  <img src="assets/R/Rstudio/Rstudio_Rnotebook_1.png" width="70%">
+  <img src="assets/R/RStudio/RStudio_Rnotebook_1.png" width="70%">
 </p>
 
 Notice that the file contains three types of content:
@@ -89,17 +89,17 @@ Notice that the file contains three types of content:
 * Text mixed with Markdown formatting.
 
 <p align="left">
-  <img src="assets/R/Rstudio/Rstudio_Rnotebook_2.png" width="100%">
+  <img src="assets/R/RStudio/RStudio_Rnotebook_2.png" width="100%">
 </p>
 
 The metadata at the top of the file (between the --- lines) contains information about the file and instructions on how to knit the document. 
 
 Code chunks can be executed within the notebook; the output is displayed beneath the code. Chunks start with `` ```{r}  `` and end with `` ``` ``. 
 * To make a new chunk, type `control (windows)/command (macOS) + option + i` 
-* To run a code chunk, press the green arrow at the right end of the chunk or place the cursor anywhere in the chunk and press `control (windows)/command (macOS) + Shift + Enter`. 
+* To run an entire code chunk, press the green arrow at the right end of the chunk or place the cursor anywhere in the chunk and press `control (windows)/command (macOS) + Shift + Enter`. 
 * To run a **specific line of code** within a code chunk, move the cursor to the desired line and press `control (windows)/command (macOS) + Enter`.
 
-**_Task:_** Run the default code chunk in your notebook. A graph should appear below the eechunk.
+**_Task:_** Run the default code chunk in your notebook. A graph should appear below the chunk.
 
 
 Text in an .Rmd file is in plain text, however, we can add [markdown annotations](https://www.markdownguide.org/basic-syntax/) which create formatted text (bold, italics, links, etc.) when the .Rmd file is converted into a rich text file (HTML, PDF, Microsoft Word, etc.)
@@ -110,21 +110,21 @@ Text in an .Rmd file is in plain text, however, we can add [markdown annotations
 ### Error messages
 Code chunks have useful features to help with debugging.
 
-If RStudio detects typos like a missing character or spelling errors, a little red x appears next to that line of code. This is very helpful since it indicates which line has the mistake. 
+If RStudio detects typos like a missing character or spelling errors, a little red "x" appears next to that line of code. This is very helpful since it indicates which line has the mistake. 
 <p align="left">
-  <img src="assets/R/Rstudio/RStudio_x_error.png" width="75%">
+  <img src="assets/R/RStudio/RStudio_x_error.png" width="75%">
 </p>
 
-The other way R reports errors is through error messages. Furthermore, the code will stop running at that line and you can get an idea of where the error is by looking at the progress bar next to the code. 
+The other way R reports errors is through error messages. Furthermore, the code will stop running and you can sometimes get an idea of where the error is by looking at the progress bar next to the code. 
 <p align="left">
-  <img src="assets/R/Rstudio/RStudio_error_message.png" width="75%">
+  <img src="assets/R/RStudio/RStudio_error_message.png" width="75%">
 </p>
 
 
 ### HTML output
 By default, an HTML version of the notebook is saved with the notebook file.
 
-Why do I care about an HTML version of my notebook? Because everyone can access a web browser. This makes it easy to share your results and it is possible to extract the original notebook from the HTML file.
+Why do I care about an HTML version of my notebook? Because everyone can access a web browser. This makes it easy to share your results. Furthermore, it is possible to extract the original notebook from the HTML file.
 
 **_Task:_**  View your notebook in HTML. Save the notebook and then open the project folder (hint: use the "Files" tab in the lower right of the RStudio screen). The folder should have a file with the same name as your notebook but ending in `nb.html`. Click on the nb.html file and it will open in a web browser.
 <p align="left">
@@ -158,7 +158,7 @@ install_github("DeveloperName/PackageName")
 
 NB: When installing a package from the console, the package name must be in quotes. Once installed, the package can be called without quotes. 
 
-Packages are installed once, but they need to be loaded for each R session. In a .Rmd document, it is good practice to have the first code chunk be the one that loads all necessary packages.
+Packages are installed once, but they need to be loaded for each R session.
 
 **_Task:_** Load Tidyverse into your session's environment.
 ```
@@ -171,7 +171,12 @@ ___
 
 ## Some R basics
 ### Variables
+In R, the `<-` operator is used to create a variable. For example:
 
+```
+x <- 2
+```
+The name on the left is assigned the information on the right. So here, x has a value of 2. 
 
 
 ### Functions
@@ -179,13 +184,27 @@ In general, functions in R follow this format:
 ```
 function()
 ```
-Where "function" is the name of whatever function/operation you're doing and within the parentheses you spell out all of the parameters, inputs/outputs, and options for the given function.
+Where "function" is the name of whatever function/operation you're doing and within the parentheses is where you spell out all of the parameters, inputs/outputs, and options for the given function.
+
+```
+print(x)
+```
+Here, the `print()` function took variable `x` as an input. Can you predict the results of this code?
+
+<details>
+<summary>Answer</summary>
+It
+
+</details>
+
+
 
 If you're not sure what options a function has, you can do the following:
 ```
 ??function
 ```
 This will open up a web browser and get you to an info page about functions (you will have to click on the individual function in question in the browser to get to the info page; if there are multiple functions with the same name (i.e. from different libraries), you'll have to pick the right one from the list that pops up in your browser).
+
 
 
 
