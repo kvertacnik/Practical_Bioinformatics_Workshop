@@ -199,13 +199,12 @@ It will display "2" on the screen.
 
 If you're not sure what options a function has, you can do the following:
 ```
-??function
+??function_name
 ```
-This will open up a web browser and get you to an info page about functions (you will have to click on the individual function in question in the browser to get to the info page; if there are multiple functions with the same name (i.e. from different libraries), you'll have to pick the right one from the list that pops up in your browser).
+This will take you to an info page about functions (you will have to click on the individual function in question to get to the info page; if there are multiple functions with the same name (i.e. from different libraries), you'll have to pick the right one from the list that pops up in your browser).
 
 ### Data frames
-
-
+A data frame is one of the basic data structures in R. It looks like a table, however, there are differences between data frames and data tables that we won't get into here.
 
 ### Loading files
 To load any type of data, you need to use a function that can read the data type (table, csv, etc.) and save the information as a data object.
@@ -235,3 +234,4 @@ ___
 * The four sections of an RStudio screen
 * R notebooks: How to run code chunks
 * Package installation
+* R basics

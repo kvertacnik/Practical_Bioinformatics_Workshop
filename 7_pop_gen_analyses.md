@@ -1,11 +1,13 @@
-# Population genetics analyses 
+ # Population genetics analyses 
 
 ## Getting started
 
-First, download the files we will need from the course data folder on MCC to your R_project folder (on your local computer). Hint: use `scp` with wildcards for files with similar names.
+First, download the files we will need from the course data folder on MCC `/pscratch/kdu224_iceland_bootcamps2024/data` to your R_project folder (on your local computer). Hint: use `scp` to either download the entire folder or use wildcards to get files with similar names.
 * 9_merged_0miss_minDP2_100ind_5245snps.vcf
 * 9_merged_0.5miss_minDP1_100ind_257618snps.vcf
 * Bdor_populations.sed
+* Bdor_africa_sample_list.txt
+* Bdor_asia_sample_list.txt
 * swallowtail_ABBC_781ind_10microsat.str
 * swallowtail_ABBC_strata.txt
 
@@ -60,7 +62,7 @@ There you should see the following output:
 ```
 This tells you that nancycats is what's called a GENIND object in R, and it gives you some basic info (number of individuals, loci, alleles, etc.). Within this object you have both allele/genotype data and some other info. 
 
-You can access different sets of info stored within this object by referring to the name of the data set (nancycats) with the "@" symbol and whatever other info you want to see. For example, `nancycats@ploidy` returns a list of the ploidy of all individuals in the dataset (there are 237 individuals, and they're all diploid, so relatively boring).
+You can access different sets of info stored within this object by referring to the name of the data set (nancycats) with the `@` symbol and whatever other info you want to see. For example, `nancycats@ploidy` returns a list of the ploidy of all individuals in the dataset (there are 237 individuals, and they're all diploid, so relatively boring).
 
 ### @pop
 The @pop subobject contains a list of the populations that each individual belongs to. So the following will give you a list of 237 population assignments with rather arbitrary population names ("P01", "P02", etc.)
@@ -97,9 +99,9 @@ Adegenet has a `read.structure()` function to read in our STRUCTURE file.
 2. The read.structure() function has lots of options to specify, but if you don't supply any options it will actually walk you through some of these options. See if you can answer the questions that read.structure is asking you.
 3. Press control + c to cancel this process.
 4. Alternatively, it's a little quicker to just specify that info in the function options.
-```
-swallowtail_data <- read.structure("swallowtail_ABBC_781ind_10microsat.str", n.ind=781, n.loc=10, onerowperind=T,  row.marknames=NULL, col.lab=1, col.pop=2, NA.char="-9", ask=F)
-```
+    ```
+    swallowtail_data <- read.structure("swallowtail_ABBC_781ind_10microsat.str", n.ind=781, n.loc=10, onerowperind=T,  row.marknames=NULL, col.lab=1, col.pop=2, NA.char="-9", ask=F)
+   ```
 
 ### Strata
 Strata refers to population stratification factors such as population location or breed information, so anything that can break up the individuals into different "populations". See more [here](https://raw.githubusercontent.com/thibautjombart/adegenet/master/tutorials/tutorial-strata.pdf).
@@ -177,7 +179,7 @@ There are many ways to do a PCA, but since we have genetic data we will use the 
 
 
 ### Missing data
-First, we have to deal with the missing data in this dataset (missing alleles are noted as "-9"), since PCAs will not work with missing data. A standard way to deal with missing data in ordination methods is to replace any missing data values with the mean allele frequency for that locus.
+First, we have to deal with the missing data in this dataset (missing alleles are noted as `-9`), since PCAs will not work with missing data. A standard way to deal with missing data in ordination methods is to replace any missing data values with the mean allele frequency for that locus.
 
 ```
 # We can count how many missing values are in this dataset
@@ -279,7 +281,7 @@ title("PCA of ABBC swallowtails\naxes 1-2")
 add.scatter.eig(pca1$eig[1:20], 3,1,2)
 ```
 
-You can see that many of these populations are grouping together, so let's explore that regional information in the other info file. Let's set the strata to region_name and replot the PCA with the updated population strata.
+You can see that many of these populations are grouping together, so let's explore that regional information. Let's set the strata to region_name and replot the PCA with the updated population strata.
 ```
 # Add the region columns to @strata (we could have done this earlier when we loaded the strata data)
 strata(swallowtail_data) <- swallowtail_strata[,4:5]
@@ -321,6 +323,8 @@ dist_lm <- lm(as.vector(genD) ~ as.vector(geoD))
 abline(dist_lm, col="red", lty=2)
 ```
 
+So do we see a pattern of IBD in this dataset?
+
 ___
 
 ## Fst
@@ -351,9 +355,12 @@ Fst(as.loci(nancycats))
 ```
 
 From both of those manual pages, you can see both hierfstat and pegas are calculating Weir and Cockerham's FST, so theoretically those outputs should be the same. Let's see if we can isolate the FST values from the rest of the output from those two functions and compare them in a scatterplot like we did with heterozygosity last week. Try this out on your own and when everyone's to this point we can work through it together on the screen.
-```
+
+<details>
+<summary>Answer</summary>
 plot(Fst(as.loci(nancycats))[,2], wc(nancycats)$per.loc$FST)
-```
+
+</details>
 
 ### Genomic Fst
 Genetic divergence between populations may also vary along a genome. For example, two populations may be genetically very similar across much of their genomes except at a few strongly divergent regions. These divergent regions may therefore contain adaptive genes enabling the two populations to adapt to different environments. So it would be interesting to examine if genetic divergence between populations varies along the genome.
@@ -362,7 +369,7 @@ To do this, you first need to define the members of each population. We did this
 
 We will use `vcftools` to calculate Fst. To do this, vcftools determines the allele counts across all samples, then determines the allele counts for the specified populations, and finally compares the two allele counts to determine Fst  (Kim: check this is right)
 
-We installed vcftools on the the computing cluster when we did the genotyping pipeline. Submit the following command as a job on MCC:
+We installed vcftools on the the computing cluster when we did the genotyping pipeline. Submit the following command as a job on MCC (set `#SBATCH --ntasks=1`):
 ```
 vcftools --vcf 9_merged_0miss_minDP2_100ind_5245snps.vcf --weir-fst-pop Bdor_africa_sample_list.txt --weir-fst-pop Bdor_asia_sample_list.txt --out 9_merged_0miss_minDP2_100ind_5245snps
 ```
@@ -376,72 +383,81 @@ Weir and Cockerham weighted Fst estimate: 0.06383
 After filtering, kept 5245 out of a possible 5245 Sites
 ```
 
-(Kim: figure out the difference between mean and weighted estimates)
-
 Now that we have locus Fst values, lets make a Manhattan plot, which plots the loci in order along the genome.
 
 Download the .weir.fst file to your R Project folder.
 
-In RStudio, run
+First we need to rename chromosomes to numbers. On your local computer run:
+```
+sed 's/Chromosome//g' 9_merged_0miss_minDP2_100ind_5245snps_WC_Fst.weir.fst > 9_merged_0miss_minDP2_100ind_5245snps_WC_Fst.weir.fst.edited
+```
+
+Then in RStudio, run:
 ```
 library(qqman)
 
-#set the working directory
-setwd("/home/kobina/FST")
+# Set the working directory
+#setwd("/path/to/project/folder")    # Not necessary if you're already in the project folder
 
-fst <- read.table("pop1_vs_pop2.weir.fst",sep='\t',header=TRUE)
+fst <- read.table("9_merged_0miss_minDP2_100ind_5245snps_WC_Fst.weir.fst.edited",sep='\t',header=TRUE)
 
-
-#remove nan values
+# Remove nan values
 fst_noNA <- na.omit(fst)
 
-#rename chromosomes to numbers
-sed 's/Chromosome//g' 9_merged_0miss_minDP2_100ind_5245snps_WC_Fst.weir.fst > 9_merged_0miss_minDP2_100ind_5245snps_WC_Fst.weir.fst.edited
-
-#add snp column. 
-#because this data does not include snp name, we will add dummy names.
-#we do this by assigning a number to each snp.
+# Add snp column. 
+# Because this data does not include snp name, we will add dummy names.
+# We do this by assigning a number to each snp.
 length_ <- dim(fst)[1]
 length_
 fst$SNP <- paste('SNP',1:length_)
 
-#generate the manhattan plot
+# Generate the manhattan plot
 manhattan(fst,chr='CHROM',bp='POS',
           p="WEIR_AND_COCKERHAM_FST",snp='SNP',
           logp=FALSE,ylab='WEIR AND COCKERHAM_FST',xlab='CHR')
 ```
 
-This...doesn't look like what you see in publications. Our VCF file only had 5245 snps. Let's remake the Manhattan plot with a VCF file that was filtered less stringently `9_merged_0.5miss_minDP1_100ind_257618snps.vcf`
+This...doesn't look like what you see in publications. Why do you think that is?
 
-Here are some options for your Manhattan plot:
+<details>
+<summary>Answer</summary> 
+Our VCF file only has a few thousand SNPs. Out of millions of bases, it's going to be hard to see our snps.
+
+</details>
+
+<br>
+
+Let's remake the Manhattan plot with a VCF file that was filtered less stringently and thus has more snps `9_merged_0.5miss_minDP1_100ind_257618snps.vcf`
+
+Once you have a Manhattan plot you are happy with, here are some options to highlight aspects of the data:
 ```
-#change the colors of the plot
+# Change the colors of the plot
 manhattan(fst,chr='CHROM',bp='POS',
           p="WEIR_AND_COCKERHAM_FST",snp='SNP',col=c("blue", "orange"),
           logp=FALSE,ylab='WEIR AND COCKERHAM_FST',xlab='CHR')
 
 
-#we can also annotate SNPs based on their fst values. 
-#we do that by specifying a threshold using the annotatePval parameter
-#by default, qqman only annotates the top SNP per chromosome that exceeds the threshold.
-#annotate snps with fst values 0.7
+# Annotate SNPs based on their fst values. 
+# We do that by specifying a threshold using the annotatePval parameter
+# By default, qqman only annotates the top SNP per chromosome that exceeds the threshold.
+# Here, let's annotate snps with fst values 0.7
 manhattan(fst,chr='CHROM',bp='POS',
           p="WEIR_AND_COCKERHAM_FST",snp='SNP',col=c("black", "red"),
           logp=FALSE,annotatePval = 0.7,annotateTop = TRUE)
 
-#highlight all hits. 
-#to do that, we change the annotateTop parameter to False
+# Highlight all hits. To do that, we change the annotateTop parameter to False
 manhattan(fst,chr='CHROM',bp='POS',
           p="WEIR_AND_COCKERHAM_FST",snp='SNP',col=c("black", "red"),
           logp=FALSE,annotatePval = 0.7,annotateTop = F)
 
-#let's add a genomewide line.
+# Add a genomewide line.
 manhattan(fst,chr='CHROM',bp='POS',
           p="WEIR_AND_COCKERHAM_FST",snp='SNP',col=c("black", "red"),
           suggestiveline = F,genomewideline = 0.5,logp=FALSE,ylab='WEIR AND COCKERHAM_FST',xlab='CHR')
 
 
-#highlight snp(s) of interest
+# Highlight snp(s) of interest
+# Look for the green dots in the plot
 snps_of_interest=c("SNP 1422","SNP 20367","SNP 7412")
 manhattan(fst,chr='CHROM',bp='POS',
           p="WEIR_AND_COCKERHAM_FST",snp='SNP',col=c("black", "red"),
@@ -450,7 +466,7 @@ manhattan(fst,chr='CHROM',bp='POS',
 
 ___
 
-## How to convert from VCF to STRUCTURE format
+## Extra:How to convert from VCF to STRUCTURE format
 
 Download our VCF file `9_merged_0miss_minDP2_100ind_5245snps.vcf`
 
@@ -505,6 +521,19 @@ In the data folder is a file named "Bdor_populations.sed" download that file and
 ```
 sed -f Bdor_populations.sed 9_merged_0miss_minDP2.str > 9_merged_0miss_minDP2_pops.str
 ```
+_**Question:**_ What is this sed command doing? Hint: open the file Bdor_populations.sed
+
+<details>
+<summary>Answer</summary> 
+It is telling the computer to use the file Bdor_populations.sed to process 9_merged_0miss_minDP2.str and save the output as 9_merged_0miss_minDP2_pops.str.
+<br>
+<br>
+If you look inside Bdor_populations.sed, you will see a list of sed find-and-replace commands, for example "s/SRR22045704	   1/SRR22045704    10/g;". What this command is saying is find every occurnace of "SRR22045704	   1" and replace it with "SRR22045704    10", where 10 is the population of the sample.
+
+</details>
+
+<br>
+
 
 Now when you look at 9_merged_0miss_minDP2_pops.str, column 2 should have country codes.
 
@@ -525,3 +554,10 @@ Now when you look at 9_merged_0miss_minDP2_pops.str, column 2 should have countr
 | Thailand     | 13              |
 
 We could have also used the country names as populations.
+
+___
+
+## Summary
+* Adegenet GENID objects
+* PCA analyses
+* Fst analyses
