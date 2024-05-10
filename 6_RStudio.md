@@ -50,23 +50,23 @@ ___
 ## R Markdown / R Notebooks
 [Markdown](https://www.markdownguide.org/) (.md), is a way to annotate plain text so that it can be converted to fancier formatted (rich) text (e.g., bold text, subscripts, font sizes). R Markdown uses Markdown but it also has code chunks where you can embed and run code. This makes it easy to convert (knit) .Rmd files to rich text formats like Microsoft Word or HTML and create documents that have formatted text, code, and code output.
 <p align="left">
-  <img src="assets/R/Rstudio/markdown_process.png" width="100%">
+  <img src="assets/R/RStudio/markdown_process.png" width="100%">
 </p>
 
 <p align="left">
-  <img src="assets/R/Rstudio/markdown.png" width="100%">
+  <img src="assets/R/RStudio/markdown.png" width="100%">
 </p>
 
 R Notebooks are a special type of R Markdown document that is specific to RStudio. There are several differences, but perhaps the most obvious is in how you can preview the final formatting.
 
 In an R Notebook, you can preview the final formatting (except for the code output) without having to knit.
 <p align="left">
-  <img src="assets/R/Rstudio/RNotebook.png" width="70%">
+  <img src="assets/R/RStudio/RNotebook.png" width="70%">
 </p>
 
 Whereas in R Markdown you have to knit the file before you can see what it will look like.
 <p align="left">
-  <img src="assets/R/Rstudio/RMarkdown.png" width="70%">
+  <img src="assets/R/RStudio/RMarkdown.png" width="70%">
 </p>
 
 Both R Markdown and R Notebooks are .Rmd files; what differentiates an R Notebook is the `output: html_notebook` in the header.
@@ -104,7 +104,7 @@ Code chunks can be executed within the notebook; the output is displayed beneath
 
 Text in an .Rmd file is in plain text, however, we can add [markdown annotations](https://www.markdownguide.org/basic-syntax/) which create formatted text (bold, italics, links, etc.) when the .Rmd file is converted into a rich text file (HTML, PDF, Microsoft Word, etc.)
 <p align="left">
-  <img src="assets/R/Rstudio/markdown.png" width="100%">
+  <img src="assets/R/RStudio/markdown.png" width="100%">
 </p>
 
 ### Error messages
@@ -128,7 +128,7 @@ Why do I care about an HTML version of my notebook? Because everyone can access 
 
 **_Task:_**  View your notebook in HTML. Save the notebook and then open the project folder (hint: use the "Files" tab in the lower right of the RStudio screen). The folder should have a file with the same name as your notebook but ending in `nb.html`. Click on the nb.html file and it will open in a web browser.
 <p align="left">
-  <img src="assets/R/Rstudio/Rnotebook_html.png" width="100%">
+  <img src="assets/R/RStudio/RNotebook_html.png" width="100%">
 </p>
 
 ___
@@ -193,11 +193,9 @@ Here, the `print()` function took variable `x` as an input. Can you predict the 
 
 <details>
 <summary>Answer</summary>
-It
+It will display "2" on the screen.
 
 </details>
-
-
 
 If you're not sure what options a function has, you can do the following:
 ```
@@ -205,10 +203,7 @@ If you're not sure what options a function has, you can do the following:
 ```
 This will open up a web browser and get you to an info page about functions (you will have to click on the individual function in question in the browser to get to the info page; if there are multiple functions with the same name (i.e. from different libraries), you'll have to pick the right one from the list that pops up in your browser).
 
-
-
-
-
+### Data frames
 
 
 
@@ -234,4 +229,9 @@ my_data <- read.csv("/path/to/csv/file")
 library(readr)
 my_data <- read_csv("/path/to/csv/file")
 ```
+___
 
+## Summary
+* The four sections of an RStudio screen
+* R notebooks: How to run code chunks
+* Package installation
