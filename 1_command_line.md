@@ -10,22 +10,37 @@ In addition to `command line`, you may have heard the terms `terminal`, `console
 
 Command line uses the keyboard to interact with the computer. You enter text commands to navigate, run programs, and configure your computer system. It's the exact same content as the point-and-click graphical user interface (GUI) you're more familiar with.
 
+**_Question:_** Why do you think people want to work with computers solely through text, i.e., what are the advantages of command line over GUIs?
+
+<details>
+<summary>Answer</summary> 
+
+Function over form. Some reasons include:
+* Resource usage. Because it does not need to handle graphics, command line uses less computer resources like memory and processing power.
+* Coding efficiency. If the same information can be conveyed through text, it's faster to code and release your program if you don't need to make graphical screens.
+
+</details>
+
+<br>
+
 To run a command, type the command at the prompt and then press enter. Try this with `pwd`
 <p align="left">
   <img src="assets/command_line/prompt.png" width="25%">
 </p>
+
+You've just run your first command!
 
 ___
 
 ## Directory navigation
 ![Directory structure](assets/command_line/linux_directory_structure.png)
 
-Computer files are organized in a series of nested, hierarchical directories (folders) starting with the root directory. Each user has their own home directory where their files are stored. To distinguish files from directories, directory names end in `/` while file names do not.
+Computer files are organized in a series of nested, hierarchical directories (folders) starting with the root directory (`/`). Each user has their own home directory where their files are stored. To distinguish files from directories, directory names end in `/` while file names do not.
 
 NB: "Folder" and "directory" are synonymous and used interchangeably.
 
 ### Paths
-Each directory and file has a "path". Think of it as an address within the hierarchical structure. Paths start at root and go down each level until it reaches the directory or file. For example, the path to user1's desktop directory is `/home/user1/Desktop/`
+Each directory and file has a "path". Think of it as an address within the hierarchical structure. Paths start at root (`/`) and go down each level until it reaches the directory or file. For example, the path to user1's desktop directory is `/home/user1/Desktop/`
 
 For directories, the last backslash `/` can be omitted, so the path to user1's desktop directory can also be written as `/home/user1/Desktop`
 
@@ -33,17 +48,17 @@ The path to your home directory can be abbreviated as `~`, so the path to user1'
 
 Instead of typing the full name, **paths and files can be auto-filled using the tab key** (tab-completion). For example, typing `~/De` `tab` will automatically complete with `~/Desktop`
 
-**_Question:_** Based on the above figure, why would `~/D` `tab` fail to tab-complete?
+**_Question:_** Based on the above figure, why does `~/D` `tab` fail to tab-complete but `~/De` `tab` automatically fills in `~/Desktop`? Try it!
 
 <details>
 <summary>Answer</summary> 
 
-There are two directories that start with "D" (Desktop and Documents). Tab-complete doesn't know which one you want, so it can't complete the path for you. Once you have a unique word, in this case `~/De`, the only directory it could be is the Desktop directory, so tab-complete works. 
+There are two directories that start with "D" (Desktop and Documents). Tab-complete doesn't know which one you want, so it can't complete the path for you. Once you have a unique word, in this case `~/De`, the only directory it can be is the Desktop directory, so tab-complete works. 
 
 </details>
 
 <br>
-NB: One way to get a file or folder path is to drop the item into the Terminal.
+NB: One way to get a file or folder path is to drop the item into the Terminal. On macOS, you can also right-click on the file while holding down the option key.
 
 <p align="left">
   <img src="assets/command_line/drag_and_drop_path.png" width="60%">
@@ -75,7 +90,7 @@ For directories, add `-r` to `cp` and add `-rf` to `rm`. For example, use `rm -r
 
 **_Task:_** Go to your desktop directory. Make a folder named `examples`
 
-NB: If the command line gets stuck or you want to cancel a running command use `control + c`
+NB: If the command line gets stuck or you want to cancel a running command press `control + c`
 
 NB: Command line saves a history of executed commands. Use the up arrow to go through your most recent commands; this is useful when you need to rerun the same command.
 
@@ -87,7 +102,7 @@ Command line cannot read files written in graphical programs like Word and Excel
 What happens when we try to look at an Excel file?
 ![Excel example](assets/command_line/head_excel.png)
 
-Instead, files are in plain text. Multiple text editors are built into the command line. We will use `nano`.
+This isn't helpful. Instead, files are often in plain text. Multiple text editors are built into the command line. We will use `nano`.
 
 **_Task:_** Use the command line to make and edit new text file.
 1. Go into your examples directory by running `cd ~/Desktop/examples`
@@ -116,7 +131,7 @@ Did you catch the three ways to make a new file?
 NB: File extensions are important for understanding file contents. For example, a file named "sample1" could be anything, e.g., a text file with metadata or a fastq file with sequence reads. Naming the file sample1.txt or sample1.fq avoids this problem.
 ___
 
-## Redirect output
+## Redirecting output
 By default, the normal output of a command/execution prints to the screen. This is known as standard out (stdout). If you want to save stdout to a file, redirect it by adding `> new_file_name` to the end of the command.
 
 **_Task:_** Redirect a command output.
@@ -178,14 +193,23 @@ wc -w log.txt    # Counts how many words are in the file
 
 
 ### Find text with `grep`
-`grep` searches every line in the file for word(s) that you provide (the pattern). If a line has a matching pattern, grep will print that line; grep only searches for text and cannot make edits.
+`grep` searches every line in the file for words that you provide (the pattern). If a line has a matching pattern, grep will print that line; grep only searches for text and cannot make edits.
 
-The grep format is `grep [OPTIONS] "search_word" file_to_search` <br>
-The search_word is case-sensitive. It should be in quotes so that it is not mistaken for a command.
+The grep format is `grep [OPTIONS] search_word file_to_search` <br>
+Note that `search_word` is case-sensitive. 
 
 **_Task:_** We want to know how many ERROR events are in log.txt. We can:
-1. Print every line with the word "ERROR" `grep "ERROR" log.txt`
-2. Count the number of lines with the word "ERROR" `grep -c "ERROR" log.txt` 
+1. Print every line with the word "ERROR" `grep ERROR log.txt`
+2. Count the number of lines with the word "ERROR" `grep -c ERROR log.txt`
+
+<br>
+
+It is common for one-word search terms to be in quotes so that it is clear what the search pattern is, e.g., `grep "ERROR" log.txt`. 
+
+If the search term has white space (e.g., `thank you`), put the pattern in quotation marks (`grep "thank you"`) so that grep knows you're looking for one pattern, not two. 
+
+The characters `\^$.|?*+()[]{}` have special functions. If you want to include them literally (as plain text), they must be "escaped" with `\`. For example, if I wanted to search for the pattern `$variable`, `grep $variable` would not work but `grep \$variable` does. Look up regular expressions (regex) for a lot more information.
+
 
 ### Find and replace text with `sed`
 `sed` can edit text within a file. One common use of sed is find and replace.
@@ -193,9 +217,11 @@ The search_word is case-sensitive. It should be in quotes so that it is not mist
 To replace all occurrences of a word, the sed find and replace format is <br>
 `sed 's/search_word/replace_word/g' file` <br>
 
-Unlike grep, search_word is not in quotes but it is still case-sensitive, however, 's/search_word/replace_word/g' must be in quotes.
+Like grep, `search_word` is case-sensitive. <br>
+The sed command `'s/search_word/replace_word/g'` must be in quotes.
 
-**_Task:_** Replace all occurrences of the word "ERROR" with the word "check".
+**_Task:_** Replace all occurrences of the word "ERROR" with the word "check" (do not redirect the output).
+
 
 ### `awk`: it's complicated
 `awk` is an entire programming language that can do the same tasks as grep and sed but also a lot more. 
@@ -209,16 +235,16 @@ ___
 ## For loops
 For loops are useful when you need to run the same command(s) on multiple files.
 
-In Bash, the for loop format is:
+In Bash, this is the loop format:
 
 ```for item in [LIST]; do [COMMANDS] $item; done```
 
 ### For loop from a list
-**_Task:_** In log.txt, replace the all occurrences of the words "INFO" and "ERROR" with the word "okay" by running `for item in ERROR INFO; do sed "s/$item/okay/g" log.txt; done`
+**_Task:_** In log.txt, replace all occurrences of the words "INFO" and "ERROR" with the word "okay" by running `for item in ERROR INFO; do sed "s/$item/okay/g" log.txt; done`
 
 A few things to note:
-* The words in the list "ERROR INFO" are separated by spaces, not commas.
-* "item" is a variable that changes meaning from "ERROR" to "INFO". Because of this `s/$item/okay/g` is in double quotes instead of single quotes.
+* The words in the list "ERROR INFO" are separated by _spaces_, not commas.
+* "item" is a variable that changes meaning from "ERROR" to "INFO". Because of this, `s/$item/okay/g` is in double quotes instead of single quotes.
 * The variable can be any word; it is very common for people to use `f` or `i`
 
 The output should look like this:
@@ -235,11 +261,9 @@ Each iteration of the data represents the for loop working on each item in the l
 
 <br>
 
-Rerun the for loop, but this time redirect the output:
-1.  `for item in ERROR INFO; do sed "s/$item/okay/g" log.txt > log_edited1.txt; done` <br>
-2. Look at the output file's contents `cat log_edited1.txt`
+Rerun the for loop, but this time redirect the output `for item in ERROR INFO; do sed "s/$item/okay/g" log.txt > log_edited1.txt; done`
 
-**_Question:_** Why is the data NOT displayed twice when the output is redirected to log_edited1.txt?
+**_Question:_** Look at the output file's contents `cat log_edited1.txt`. Why is the data NOT displayed twice when the output is redirected to log_edited1.txt?
 
 <details>
 <summary>Answer</summary>
@@ -247,9 +271,11 @@ Rerun the for loop, but this time redirect the output:
 When we redirect the output to log_edited1.txt, the for loop now saves the output of each iteration to log_edited1.txt. This means the file is _overwritten_ for each item in the list. What the file contains at the end of the for loop is the results of the last iteration.
 <br>
 <br>
-Note that `>` redirects output to a new file while `>>` appends output to an existing file. If we had used `>>` then we would see the output of both loop iterations.
+Note that `>` redirects output to a new file while `>>` appends output to an existing file. If we had used `>>` then we would see the output of both loop iterations. Try it! `for item in ERROR INFO; do sed "s/$item/okay/g" log.txt >> log_edited1_appended.txt; done`
 
 </details>
+
+<br>
 
 ### For loop from a list in a file
 [LIST] can also be a file where each line is a different item. The for loop reads each line one at a time and runs the same commands on every item in the list.
@@ -257,21 +283,21 @@ Note that `>` redirects output to a new file while `>>` appends output to an exi
 **_Task:_** In log.txt, replace the words "INFO" and "ERROR" with the word "okay", but this time "INFO" and "ERROR" will be read from a file.
 
 1. In your "examples" directory make a new text file `nano search.txt`
-2. List "INFO" and "ERROR" in a column like this:
-```
-ERROR
-INFO
-```
+2. List "ERROR" and "INFO" in a column like this:
+    ```
+    ERROR
+    INFO
+    ```
 3. Save the file and exit nano `control+x`
 4. Then run: 
-```
-for item in `cat search.txt`; do sed "s/$item/okay/g" log.txt > log_edited2.txt; done
-```
+    ```
+    for item in `cat search.txt`; do sed "s/$item/okay/g" log.txt > log_edited2.txt; done
+    ```
 5. Compare the contents of log_edited1.txt and log_edited2.txt.
 
 A few things to note:
 * The backtick character `` ` `` lets us call a function within another command. 
-* The backtick `` ` `` is not the same as the single quote `'`. On a keyboard, the backtick is usually to the left of the "1" key while the single quote is over on the right side of the keyboard next to the "enter" key; make sure not to mix those up! 
+* The backtick `` ` `` is _not_ the same as the single quote `'`. On a keyboard, the backtick is usually to the left of the "1" key while the single quote is over on the right side of the keyboard next to the "enter" key; make sure not to mix these up! 
 * For the genotyping pipeline we will do many of this type of for loop.
 
 **_Question:_** The command `echo` prints whatever follows to the screen. A pipe `|` takes the output of the function on the left and passes it to the function on the right. What does this for loop do?
@@ -280,6 +306,7 @@ A few things to note:
 
 <details>
 <summary>Answer</summary>
+
 It gets the number of characters for each item in the search.txt list.
 <br><br>
 Each item in search.txt is printed to the screen, but because we're using a pipe, the output is passed to the  `wc -c`  command which counts the number of characters.
@@ -288,7 +315,7 @@ Each item in search.txt is printed to the screen, but because we're using a pipe
 
 ___
 
-## Summary
+## The bare minimum to remember
 * Paths
 * Command-line commands
 * Nano text editor

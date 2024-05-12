@@ -1,18 +1,18 @@
-# Remote cluster (MCC)
+# Remote cluster (U. Kentucky MCC)
 
 ![ssh](assets/command_line/ssh.png)
 
-## Connect
+## Connect to the cluster
 `ssh` (secure shell) establishes a connection from your computer to the cluster. You must have an account on the cluster before logging in.
 
-First, launch the GlobalProtet VPN and log in with your linkblue ID.
+Launch the GlobalProtet VPN and log in with your linkblue ID.
 <p align="left">
   <img src="assets/command_line/globalprotect.png" width="10%">
 </p>
 
 
 On your computer, open Terminal and run `ssh user_name@mcc.uky.edu` <br>
-If you have a cluster account but no VPN access, run `ssh user_name@mcc-dtn.ccs.uky.edu` (this connection is slower).
+If you have a cluster account but no VPN access, connect with `ssh user_name@mcc-dtn.ccs.uky.edu` (this connection is slower).
 
 The first time you connect to the cluster, you will get a message like this; type `yes` to continue.
 
@@ -23,7 +23,7 @@ The first time you connect to the cluster, you will get a message like this; typ
 It will then ask for your password. Type it in but note that nothing will show up on the screen.
 
 
-After successfully logging in, the command line prompt will change to show that. It should look something like this `[user_name@mcc-login001 ~]$`
+After successfully logging in, the command line prompt will change. It should look something like this `[user_name@mcc-login001 ~]$`
 
 To disconnect from the cluster, run `exit`. Don't forget to close the VPN.
 
@@ -33,7 +33,8 @@ ___
 
 ## Make your working directory on MCC
 1. After logging on to MCC, go to our course directory <br>
- `cd /pscratch/kdu224_iceland_bootcamps2024`
+ `cd /pscratch/kdu224_iceland_bootcamps2024/` <br>
+Try using tab-complete so that you don't have to type out this very long folder name.
 
 2. View the contents of the class directory with `ls`
 
@@ -56,20 +57,20 @@ ___
 Your current working directory and local_file must be on your local computer.
 
 If local_file is in your current working directory: <br>
-`scp local_file user_name@server_address:/path/to/cluster/directory`
+`scp local_file user_name@server_address:/path/to/cluster/directory/`
 
 If local_file is in another directory: <br>
-`scp /path/to/local_file user_name@server_address:/path/to/cluster/directory`
+`scp /path/to/local_file user_name@server_address:/path/to/cluster/directory/`
 
 ### Copy files from the cluster to your local computer
 Again, the current working directory must be on your local computer.
 
-`scp user_name@server_address:/path/to/cluster/remote_file /path/to/local/directory`<br>
+`scp user_name@server_address:/path/to/cluster/remote_file /path/to/local/directory/`<br>
 
-If the destination is the local current working directory, `/path/to/local/directory` can be replaced with `.` <br>
+If the destination is the local current working directory, `/path/to/local/directory/` can be replaced with `.` <br>
 `scp user_name@server_address:/path/to/cluster/file.txt .`
 
-**_Question:_** How do you modify the `scp` command to transfer a directory?
+**_Question:_** How do you modify the `scp` command to transfer a folder?
 
 <details>
 <summary>Answer</summary> 
@@ -80,7 +81,7 @@ If the destination is the local current working directory, `/path/to/local/direc
 
 <br>
 
-**_Task:_** Earlier you made a file named `hello.txt` (in your "examples" folder). Use `scp` to copy that file from your computer to your folder on the cluster.
+**_Task:_** Earlier you made a file named `hello.txt` (in your local "examples" folder). Use `scp` to copy that file from your local computer to your folder on the cluster.
 
 ### Another way to transfer files
 Like ssh, the command `sftp` moves files but is more interactive in that you enter a special shell within the current shell. 
@@ -89,7 +90,7 @@ Let's say you're on your local machine in a directory with a file you want to tr
 
 Then run `put local_file` to transfer the file from your local machine to the cluster. Likewise, to get a file off the cluster run `get remote_file` and it will transfer the file from the cluster to your local machine. Run `exit` to quit sftp.
 
-**_Task:_** Using `sftp`, copy the `log.txt` file you made previously from your computer to your folder on the cluster. Make sure you're in the folder that has log.txt when you start sftp.
+**_Task:_** Earlier you made a file named `log.txt` (in your local "examples" folder). Use `sftp` to copy that file from your local computer to your folder on the cluster. Make sure you are in the folder that has log.txt when you start sftp.
 
 ___
 
@@ -104,7 +105,7 @@ Job script files must end in `.sh` and must start with the following lines:
 #SBATCH --time=             # How long you want to use the resources
 #SBATCH --nodes=            # How many processors; typically 1
 #SBATCH --ntasks=           # How many cores on the processor
-#SBATCH --account=          # CPU hours are monitored and charged
+#SBATCH --account=          # Resource use is monitored and charged
 
 Optional
 #SBATCH --mail-type=ALL     # Notify when job starts/ends/fails. Options: ALL, NONE, BEGIN, END, FAIL, REQUEUE
@@ -122,30 +123,35 @@ The format for --time= is day-hour:minute:second, e.g., 00-01:00:00 means 1 hour
 
 NB: Notification emails often end up in spam/junk folders.
 
-**_Task:_** In your folder on MCC, make a new file named "job_header.sh" and add the following lines. We will use this file as a template for job submission.
-```
-#!/bin/bash
-#SBATCH --partition=normal
-#SBATCH --time 01-00:00:00
-#SBATCH --nodes=1
-#SBATCH --ntasks=32
-#SBATCH --account=cea_kdu224_iceland_bootcamps2024
-#SBATCH --mail-type ALL
-#SBATCH --mail-user <your email address>
-```
+**_Task:_** In your folder on MCC, make a new file named `job_header.sh` and add the following lines. We will use this file as a template for job submission.
+
+1. Make a new text file `nano job_header.sh`
+2. Paste the following (don't forget to update your email address)
+    ```
+    #!/bin/bash
+    #SBATCH --partition=normal
+    #SBATCH --time 01-00:00:00
+    #SBATCH --nodes=1
+    #SBATCH --ntasks=32
+    #SBATCH --account=cea_kdu224_iceland_bootcamps2024
+    #SBATCH --mail-type ALL
+    #SBATCH --mail-user <your email address>
+    ```
+3. Save and exit nano `control + x`
+
+<br>
 
 To submit a job run `sbatch your_job_script.sh`
 
-Once you submit a job, you can check its status with `squeue | grep "user_name"`. If all processors are in use, your job will wait until resources are available; `TIME 0:00` means your job has not started.
+Once you submit a job, you can check its status with `squeue | grep user_name`. If all processors are in use, your job will wait until resources are available; `TIME 0:00` means your job has not started.
 
 ![squeue example](assets/command_line/squeue.png)
 
 Each job gets a job number and a corresponding `slurm-job_number.out` file. This file has the information that is normally printed to the screen as the program is running (stdout). 
 
-To cancel a submitted job use `scancel job_number` (get the job number from `squeue | grep mcc_user_name`)
+To cancel a submitted job use `scancel job_number` (get the job number from `squeue | grep user_name`)
 
 See [here](https://ukyrcd.atlassian.net/wiki/spaces/UKYHPCDocs/pages/72418017/Submitting+jobs+on+MCC+for+first-time+users) for additional information. If the link fails, go to the left sidebar --> UKY RCD Documentation --> Morgan Compute Cluster (MCC) --> Submitting jobs on MCC (for first-time users)
-
 
 NB: All data analysis should be submitted as a job. **Do not run jobs on the login node.**
 
@@ -155,32 +161,30 @@ ___
 Now let's create a job file and submit a command that we can watch as it progresses. 
 
 1. Create a new file named counting.sh `nano counting.sh`
-2. Paste the following:
+2. Paste the following (don't forget to update your email address)
+    ```
+    #!/bin/bash
+    #SBATCH --partition=normal
+    #SBATCH --time 01:00:00
+    #SBATCH --nodes=1
+    #SBATCH --ntasks=1
+    #SBATCH --account=cea_kdu224_iceland_bootcamps2024
+    #SBATCH --mail-type ALL
+    #SBATCH --mail-user <your email address>
 
-```
-#!/bin/bash
-#SBATCH --partition=normal
-#SBATCH --time 01:00:00
-#SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --account=cea_kdu224_iceland_bootcamps2024
-#SBATCH --mail-type ALL
-#SBATCH --mail-user <your email address>
-
-echo "starting"
-sleep 10
-echo "it's been 10 seconds"
-sleep 20
-echo "it's been 30 seconds"
-sleep 30 
-echo "it's been 60 seconds. Exciting!"
-sleep 5
-echo "it's been 65 seconds. Amazing."
-sleep 6
-echo "it's been 71 seconds. What are we deviating from 5 second intervals???"
-```
-
-2. Save the file (`control + x`), and then use `cat` to check that the job submission file looks correct.
+    echo "starting"
+    sleep 10
+    echo "it's been 10 seconds"
+    sleep 20
+    echo "it's been 30 seconds"
+    sleep 30 
+    echo "it's been 60 seconds. Exciting!"
+    sleep 5
+    echo "it's been 65 seconds. Amazing."
+    sleep 6
+    echo "it's been 71 seconds. What are we deviating from 5 second intervals???"
+    ```
+2. Save the file `control + x`, and then use `cat` to check that the job submission file looks correct.
 3. Submit the job using the following command: `sbatch counting.sh`
 
 Once the job is submitted, check that it's running by using `squeue`. Lots of stuff, right? That output is a list of all the jobs that are currently running on the cluster. We can subset that in two ways. First, we could just grep our username:
@@ -193,15 +197,18 @@ Or you can use an option in squeue:
 squeue -u mcc_user_name
 ```
 
-Let's check on the status of the job. Standard out (stdout) for computers is the normal output of a command. Standard error (stderr) is any error messages that arise from a command. The default location for stdout when MCC is running a job is in a file called `slurm-jobID.out`. 
+Let's check the status of the job. Standard out (stdout) for computers is the normal output of a command. Standard error (stderr) is any error messages that arise from a command. The default location for stdout when MCC is running a job is a file called `slurm-jobID.out`. 
 
 So let's see what's in the slurm file. It should be in the same directory as the batch script. Try using `cat` to see what's in that file. If the job is still running, can you figure out where you are in the job commands?
 
-Another way to interact with the stdout from a job is to write that output to another file. Take the `counting.sh` file and at the end of each "echo" line, add the following `>> counting_output.txt`. Resubmit the job, and now see if you can follow the status of the job in real time using `cat` and the `counting_output.txt` file.
+**_Task:_** Another way to interact with the stdout from a job is to write that output to another file. 
+1. Take the `counting.sh` file and at the end of each "echo" line, add the following `>> counting_output.txt`
+2. Resubmit the job.
+3. Now see if you can follow the status of the job in real time using `cat` and the `counting_output.txt` file. It should look the same as the slurm file you looked at earlier.
 
 Note that `>` redirects output to a new file while `>>` appends output to an existing file.
 
-You should have emails in your inbox that document when these jobs started and ended. The exit code is important in this email, as it lets you know if the job finished with no issues (exit code 0) or with an error or other issue. See [here](https://hpc-discourse.usc.edu/t/exit-codes-and-their-meanings/414) for more info on exit codes. They can be very useful when troubleshooting errors!
+You should have emails in your inbox that document when these jobs started and ended. The exit code is important in this email, as it lets you know if the job finished with no issues (exit code 0) or with an error or other issue. See [here](https://hpc-discourse.usc.edu/t/exit-codes-and-their-meanings/414) for more info on exit codes. They can be very useful when troubleshooting!
 
 ___
 
@@ -212,9 +219,9 @@ Some programs are already installed on MCC, however, they need to be activated i
 
 `module avail` lists the programs installed on the cluster. Use `module avail | grep "program_name"` to search for a specific program (note that most module names are in lowercase).
 
-`module load module_name` activates the program for your current session
+`module load module_name` activates the program for your current session.
 
-`module unload module name` deactivates/removes the program from your account
+`module unload module name` deactivates/removes the program from your current session.
 
 To use a module in a job script, include `module load module_name` before you run the program command.
 
@@ -223,24 +230,26 @@ ___
 ## Singularities
 These are like modules. The full list of singularity programs is [here](https://ukyrcd.atlassian.net/wiki/spaces/UKYHPCDocs/pages/72417975/Software+list+for+singularity+containers+for+conda+packages+in+the+MCC+cluster). If the link fails, go to the left sidebar --> UKY RCD Documentation --> Morgan Compute Cluster (MCC) --> Software list for singularity containers
 
-This is how you would call a singularity in a job script:
+This is how you would call a singularity in a job script
 ```
 container=/from/container_name_and_location/column
+
 singularity run --app app_name_from_the_second_column $container program_name program_commands
 ```
 
-So for example:
+So for example
 ```
 container=/share/singularity/images/ccs/conda/amd-conda1-centos8.sinf
+
 singularity run --app blast2120 $container blastn -db blast_database -query search.fasta -out blast_alignment.out
 ```
 
 ___
 
-## Getting data for read mapping and SNP calling with GATK
+## Getting data for read mapping and GATK SNP calling
 SNP calling from whole-genome (shotgun) sequence data requires a reference genome plus sequencing reads from multiple individuals. The reads are mapped to the reference and genotypes are called from the alignments.
 
-We're going to use Bactrocera dorsalis (oriental fruit fly) whole-genome sequence data from [this paper](https://onlinelibrary.wiley.com/doi/full/10.1111/eva.13507).
+We're going to use _Bactrocera dorsalis_ (oriental fruit fly) whole-genome sequence data from [this paper](https://onlinelibrary.wiley.com/doi/full/10.1111/eva.13507).
 
 ### **_Task:_** Get sequencing read files
 Our data is from this [BioProject](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA893460/). We need to download shotgun reads for multiple individuals, which is a repetitive task (and the perfect opportunity to use a for loop!).
@@ -251,23 +260,23 @@ A list of the SRA accessions is in the courese data folder at `/pscratch/kdu224_
 
 1. Go to your personal directory on the cluster.
 2. You were all assigned a set of four samples, to get a file with those accession values run: 
-```
-sed -n '<lower_number>,<upper_number>' /pscratch/kdu224_iceland_bootcamps2024/data/Bdor_WGS_SRA_list.txt > SRA_accessions.txt
-
-# This command is all one line
-# The sed command should look something like this: sed -n '20,24'
-```
-
+    ```
+    sed -n '<lower_number>,<upper_number>' /pscratch/kdu224_iceland_bootcamps2024/data/Bdor_WGS_SRA_list.txt > SRA_accessions.txt
+    ```
+    * This command is all one line.
+    * The sed command should look something like this: sed -n '20,24'
+    * Do not submit this as a job. Just run like normal.
+    
 3. Make a copy of your job script template file and name it `SRA_download.sh`
-```
-cp job_header.sh SRA_download.sh
-```
+    ```
+    cp job_header.sh SRA_download.sh
+    ```
 4. Open SRA_download.sh in nano (`nano SRA_download.sh`) and add the following after the header (I suggest using copy-and-paste):
-```
-for f in `cat SRA_accessions.txt`; do /pscratch/kdu224_iceland_bootcamps2024/programs/sratoolkit.3.1.0-ubuntu64/bin/prefetch $f; /pscratch/kdu224_iceland_bootcamps2024/programs/sratoolkit.3.1.0-ubuntu64/bin/fasterq-dump --outdir fastq --skip-technical --threads 32 $f/$f.sra; rm -rf $f; done
-```
+    ```
+    for f in `cat SRA_accessions.txt`; do /pscratch/kdu224_iceland_bootcamps2024/programs/sratoolkit.3.1.0-ubuntu64/bin/prefetch $f; /pscratch/kdu224_iceland_bootcamps2024/programs/sratoolkit.3.1.0-ubuntu64/bin/fasterq-dump --outdir fastq --skip-technical --threads 32 $f/  $f.sra; rm -rf $f; done
+    ```
 
-5. Save and exit nano (`control + x`)
+5. Save and exit nano `control + x`
 6. Submit your job `sbatch SRA_download.sh`. Assuming the job starts right away, it will take about 10 minutes and you should have a new folder named "fastq".
 
 ___
@@ -276,17 +285,17 @@ ___
 The sequence files have ~20-30 million reads. To speed up analysis time, let's subsample them down to 1 million reads. This way, we'll have enough time for the entire genotyping pipeline, but it will obviously affect the final SNP dataset that we obtain at the end.
 
 1. In your personal directory on the cluster, make a copy of your job script template file and name it `SRA_subsample.sh`
-```
-cp job_header.sh SRA_subsample.sh
-```
+    ```
+    cp job_header.sh SRA_subsample.sh
+    ```
 2. Open SRA_subsample.sh (`nano SRA_subsample.sh`) and change `#SBATCH --ntasks=32` to `#SBATCH --ntasks=1`
-3. Add the following after the header (don't forget to update the SRA_accessions.txt path with your specific information):
-```
-cd fastq
+3. Add the following after the header (don't forget to update /path/to/your/SRA_accessions.txt with your specific information):
+    ```
+    cd fastq
 
-for f in `cat /path/to/your/SRA_accessions.txt`; do head -n 4000000 "$f"_1.fastq > "$f".1Mreads.R1.fastq; head -n 4000000 "$f"_2.fastq > "$f".1Mreads.R2.fastq; done
-```
-4. Save and exit nano (`control + x`) 
+    for f in `cat /path/to/your/SRA_accessions.txt`; do head -n 4000000 "$f"_1.fastq > "$f".1Mreads.R1.fastq; head -n 4000000 "$f"_2.fastq > "$f".1Mreads.R2.fastq; done
+    ```
+4. Save and exit nano `control + x`
 5. Submit your job `sbatch SRA_subsample.sh`. Assuming the job starts right away, it will take about 10 seconds.
 
 **_Question:_** Can you follow what's going on in this job? Why are we getting 4000000 lines per file? And what does the `>` do?
@@ -304,8 +313,8 @@ The `>` is redirecting the output from the `head` command to the subsample read 
 
 ___
 
-## Summary
+## The bare minimum to remember
 * Logging onto the computing cluster
 * Up/downloading files from your local computer to the cluster
 * Submitting jobs on the cluster
-* In preparation for genotyping, we downloaded sequencing files from NCBI
+* In preparation for genotyping, we downloaded sequencing files from NCBI and subset them to 1 million reads
