@@ -16,4 +16,4 @@ At the end of the course students should be able to:
 * Use the command line to navigate directories & make and edit files.
 * Use the command line to install software
 * Use a high-performance computing cluster, including up/downloading files and submitting job scripts.
-* Use the RStudio environment to write and run code
+* Use the RStudio environment for genetic analyses
