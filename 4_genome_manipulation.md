@@ -81,7 +81,7 @@ Even though you're in the same directory as seqtk, the command line does not aut
 
 **_Question:_** Why do you get a similar "command not found" error if you do this?
 ```
-cd ../
+cd ..
 ./seqtk
 ```
 
@@ -124,16 +124,17 @@ Give it a try with seqtk. A couple things to NOTE:<br>
 ### bash_profile
 The permanent solution is to add that export path command to a file named `.bash_profile` in your home directory. We will need to generate it manually. The `.` makes the file invisible to keep you from accidentally deleting it. <br>
 1. Create/open your bash_profile file: `nano ~/.bash_profile` <br>
-(tilde `~/` is a nice shortcut for your home directory, so is $HOME; both are shorter than doing cd /home/username/.bash_profile).
+(tilde `~/` is a nice shortcut for your home directory, so is $HOME; both are shorter than doing /home/user_name/.bash_profile).
 2. At the bottom of the file add the `export PATH` command that you used before. 
 ```
 export PATH=$PATH:/path/to/your/seqtk/installation/directory/
 ```
 3. Save and exit nano (`control + x`)
+4. Run `source ~/.bash_profile` to reload your .bash_profile
 
 Now every time you log into this cluster, the system looks in this file and adds all those locations with `export PATH` lines to your PATH. This essentially creates a permanent solution for adding locations to PATH. 
 
-NOTE, when you edit this file, the changes don't immediately go into effect. As I said, the system looks here every time you **login**. So, once you edit this file, you need to log out and log back in or run `source ~/.bash_profile` to make the change effective. 
+NOTE, when you edit .bash_profile, the changes don't immediately go into effect. As I said, the system looks here every time you **login**. So, once you edit this file, you need to log out and log back in or run `source ~/.bash_profile` to make the change effective. 
 
 ___
 
@@ -203,4 +204,4 @@ Finally the temp file is deleted.
 ___
 
 ## Summary
-* In preparation for genotyping, we downloaded the reference genome, extracted only the chromosome sequences, and renamed the fasta headers.
+* In preparation for genotyping, we downloaded the reference genome, extracted only the chromosome sequences, and renamed those fasta headers.

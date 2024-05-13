@@ -1,14 +1,14 @@
 # Software
 
 ## Installation
-The coding language a program is written in dictates how it is installed.
+The coding language a program is written in determines how the program is installed.
 
 A program's **source code** is the human-readable instruction set that programmers write (e.g., Python, R, C, C++). **Binary** is the machine-readable version of source code, where 0’s and 1’s represent machine code that the CPU can run.
 
 Programming languages can be broadly categorized into two types based on how they convert source code into binary.
 * An interpreted language (e.g., Python, R) uses an interpreter which reads the source code line by line and executes each line as it is read. The interpreter translates the source code into machine code at runtime. 
 
-* A compiled language (e.g., C, C++) is converted into machine code before runtime. During "compiling", a compiler program converts the source code into an executable file. The compiled code is optimized for the specific hardware and operating system of the machine on which it is intended to run, e.g., macOS with Intel processor.
+* A compiled language (e.g., C, C++) is converted into machine code before runtime. During "compiling", a compiler program converts the source code into an executable file (a file that runs a program). The compiled code is optimized for the specific hardware and operating system of the machine on which it is intended to run, e.g., macOS with Intel processor.
 
 ### Compiled languages: installing from source code
 1. Download the software package. They are often compressed in `.tar.gz` or `.gz` format; use `tar -xvf package.tar.gz` or `gunzip package.gz` to decompress.
@@ -43,19 +43,20 @@ Once in your PATH variable, you can call the program by name without having to t
 
 E.g., instead of typing `/usr/local/bin/programs/bwa-mem2-2.2.1_x64-linux/bwa-mem2`, you can now call the program by only typing `bwa-mem2`
 
-PATH information is kept in your `.bash_profile` file
+PATH information is kept in your `.bash_profile` file located in your user directory.
 
 To add a program to your PATH:
-1. Open .bash_profile `nano ~./bash_profile`
+1. Open .bash_profile `nano ~/.bash_profile`
 2. Add this line
-```
-export PATH=$PATH:/path/to/program/directory/
-```
+    ```
+    export PATH=$PATH:/path/to/program/directory/
+    ```
 3. Save and exit nano `control + x`
 4. Refresh your command line shell by running `source ~/.bash_profile`
 
-Do not add the program itself to the path, just the directory the contains the program. <br>
-The way $PATH works is that it tells the computer what directories to look in, not where to find specific files.
+**Do not add the program itself to the path, just the directory the contains the program.**
+
+The way $PATH works is that it tells the computer which directories to look in, not where to find specific files.
 
 ___
 
@@ -63,17 +64,23 @@ ___
 Package managers simplify software management by automating installation, configuration, and upgrades. They don't have every program but it's nice when they have the one you need. 
 
 ### Conda
-Anaconda is a Python distribution with thousands of packages. Conda is the package manager for Anaconda. Instead of the complete Anaconda distribution, [Miniconda](https://docs.anaconda.com/free/miniconda/miniconda-install/) is a bare-bones version that comes with Conda, Python, and a few other useful packages; if you're going to use Conda, I suggest installing Miniconda.
+Anaconda is a Python distribution with thousands of packages. Conda is the package manager for Anaconda. Instead of the complete Anaconda distribution, [Miniconda](https://docs.anaconda.com/free/miniconda/miniconda-install/) is a bare-bones version that comes with Conda, Python, and a few other useful packages; if you're going to use Conda on your local computer, I suggest installing Miniconda.
 
-In addition to package management, Conda is also an environment manager where you can create and manage virtual environments (isolated environments with different packages and versions of those packages). Each time you want to use the tools in an environment, you need to activate the environment.
+In addition to package management, Conda is also an environment manager where you can create and manage virtual environments (isolated environments with different packages and versions of those packages). Environments need to be activated prior to use. 
 
-To create a new Conda environment:
-1. `conda create --name ENV_NAME python` 
-2. `conda activate ENV_NAME`
+To create a new Conda environment
+```
+conda create --name ENV_NAME python
+```
 
-Once the environment is created, you can call it anytime with step 2. When a conda environment is activated, the shell prompt will change to show that.
+Once the environment is created, you can activate it
+```
+conda activate ENV_NAME
+```
+
+When a conda environment is activated, the shell prompt will change to show that
 <p align="left">
-  <img src="assets/command_line/conda_prompt.png" width="40%">
+  <img src="assets/command_line/conda_prompt.png" width="50%">
 </p>
 
 To install programs in a Conda environment run `conda install PACKAGE_NAME`
@@ -125,6 +132,7 @@ Add the executable to your path
 export PATH=$PATH:/pscratch/kdu224_iceland_bootcamps2024/students/user_name/programs
 ```
 3. Save and exit nano `control + x`
+4. Refresh your command line shell by running `source ~/.bash_profile`
 
 
 ### BWA2
@@ -135,7 +143,7 @@ wget https://github.com/bwa-mem2/bwa-mem2/releases/download/v2.2.1/bwa-mem2-2.2.
 tar -xvf bwa-mem2-2.2.1_x64-linux.tar.bz2 
 ```
 
-Add the path to the bwa-mem2-2.2.1_x64-linux directory to your ~/.bash_profile
+Add the path to the bwa-mem2-2.2.1_x64-linux directory to your ~/.bash_profile (Hint: you just did this for fastp)
 ```
 export PATH=$PATH:/pscratch/kdu224_iceland_bootcamps2024/students/user_name/programs/bwa-mem2-2.2.1_x64-linux/
 ```
@@ -146,8 +154,8 @@ This program modifies read mapping output files (BAM/SAM files). This time we're
 
 ```
 module load ccs/conda/python
-conda create --prefix /your/cluster/folder/bamUtil_env python=3.9
-conda activate /your/cluster/folder/bamUtil_env
+conda create --prefix /path/to/your/cluster/folder/bamUtil_env python=3.9
+conda activate /path/to/your/cluster/folder/bamUtil_env
 conda install -c bioconda bamutil
 conda deactivate bamUtil_env
 ```
@@ -220,7 +228,7 @@ Wildcards can be combined and used with various commands (e.g., ls, cp, mv, rm, 
 
 1. Asterisk `*`: This is the most widely used wildcard. It represents any number of characters (including zero characters) in a filename or extension. For example:
 * `ls *.txt` lists all files in the current directory that have a .txt extension.
-* `cp *.jpg /pictures` copies all JPEG files from the current directory to the /pictures directory.
+* `cp *.jpg ~/pictures/` copies all JPEG files from the current directory to the /pictures directory.
 * `rm *` deletes every file in the current directory (use with extreme caution).
 
 2. Question Mark `?`: This wildcard stands in for exactly one character. It's useful when you know the general pattern of the file names but want to match only those at a specific position. For example: `ls file?.txt` would list files like file1.txt, fileA.txt, but not file10.txt or file.txt.
@@ -274,7 +282,7 @@ For more information see [here](https://kb.iu.edu/d/abdb).
 
 ___
 
-## Summary
+## The bare minimum to remember
 * How to install compiled programs from source code
 * How to install executables and pre-compiled binaries
 * ~/.bash_profile
