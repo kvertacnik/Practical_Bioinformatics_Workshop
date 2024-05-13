@@ -143,7 +143,7 @@ NB: Notification emails often end up in spam/junk folders.
 
 To submit a job run `sbatch your_job_script.sh`
 
-Once you submit a job, you can check its status with `squeue | grep user_name`. If all processors are in use, your job will wait until resources are available; `TIME 0:00` means your job has not started.
+Once you submit a job, you can check its status with `squeue | grep user_name`. If all processors are in use, your job will wait until resources are available; `TIME 0:00` means your job has not started. No message means your job has ended.
 
 ![squeue example](assets/command_line/squeue.png)
 
@@ -261,10 +261,10 @@ A list of the SRA accessions is in the courese data folder at `/pscratch/kdu224_
 1. Go to your personal directory on the cluster.
 2. You were all assigned a set of four samples, to get a file with those accession values run: 
     ```
-    sed -n '<lower_number>,<upper_number>' /pscratch/kdu224_iceland_bootcamps2024/data/Bdor_WGS_SRA_list.txt > SRA_accessions.txt
+    sed -n '<lower_number>,<upper_number>p' /pscratch/kdu224_iceland_bootcamps2024/data/Bdor_WGS_SRA_list.txt > SRA_accessions.txt
     ```
     * This command is all one line.
-    * The sed command should look something like this: sed -n '20,24'
+    * The sed command should look something like this: sed -n '20,24p'
     * Do not submit this as a job. Just run like normal.
     
 3. Make a copy of your job script template file and name it `SRA_download.sh`
