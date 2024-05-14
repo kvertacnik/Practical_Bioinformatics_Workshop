@@ -220,7 +220,7 @@ First, we have a header file. You can see it's basically the header from job_hea
 2. Add the following (don't forget to add your email address):
 ```
 #!/bin/bash
-#SBATCH --time 2:00:00 
+#SBATCH --time 5:00:00 
 #SBATCH --job-name=6_gatk_hapcaller
 #SBATCH --nodes=1
 #SBATCH --ntasks=20
@@ -245,7 +245,7 @@ Second, I have a simple bash file that has the commands.
 
 mkdir 6_gatk_hapcaller_out
 
-# This is a still a for loop
+# This is a still a for loop, just in a different format
 for f in `cat list`; 
 do
 echo $f
