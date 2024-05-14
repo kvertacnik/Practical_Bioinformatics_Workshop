@@ -126,7 +126,7 @@ chmod a+x ./fastp
 ```
 
 Add the executable to your path
-1. Open .bash_profile `nano ~./bash_profile`
+1. Open .bash_profile `nano ~/.bash_profile`
 2. Add this line (update with your information):
 ```
 export PATH=$PATH:/pscratch/kdu224_iceland_bootcamps2024/students/<user_name>/programs
