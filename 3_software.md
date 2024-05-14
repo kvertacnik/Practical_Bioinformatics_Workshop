@@ -129,7 +129,7 @@ Add the executable to your path
 1. Open .bash_profile `nano ~./bash_profile`
 2. Add this line (update with your information):
 ```
-export PATH=$PATH:/pscratch/kdu224_iceland_bootcamps2024/students/user_name/programs
+export PATH=$PATH:/pscratch/kdu224_iceland_bootcamps2024/students/<user_name>/programs
 ```
 3. Save and exit nano `control + x`
 4. Refresh your command line shell by running `source ~/.bash_profile`
@@ -145,7 +145,7 @@ tar -xvf bwa-mem2-2.2.1_x64-linux.tar.bz2
 
 Add the path to the bwa-mem2-2.2.1_x64-linux directory to your ~/.bash_profile (Hint: you just did this for fastp)
 ```
-export PATH=$PATH:/pscratch/kdu224_iceland_bootcamps2024/students/user_name/programs/bwa-mem2-2.2.1_x64-linux/
+export PATH=$PATH:/pscratch/kdu224_iceland_bootcamps2024/students/<user_name>/programs/bwa-mem2-2.2.1_x64-linux/
 ```
 
 
@@ -176,7 +176,7 @@ unzip gatk-4.5.0.0.zip
 
 Add the path to the gatk-4.5.0.0 directory to your ~/.bash_profile
 ```
-export PATH=$PATH:/pscratch/kdu224_iceland_bootcamps2024/students/user_name/programs/gatk-4.5.0.0
+export PATH=$PATH:/pscratch/kdu224_iceland_bootcamps2024/students/<user_name>/programs/gatk-4.5.0.0
 ```
 
 
@@ -233,7 +233,7 @@ Wildcards can be combined and used with various commands (e.g., ls, cp, mv, rm, 
 
 2. Question Mark `?`: This wildcard stands in for exactly one character. It's useful when you know the general pattern of the file names but want to match only those at a specific position. For example: `ls file?.txt` would list files like file1.txt, fileA.txt, but not file10.txt or file.txt.
 
-## Symlinks
+### Symlinks
 Symbolic links (symlinks) are a type of file that points to another file or directory, similar to shortcuts in Windows or aliases in macOS. When you access a symlink, the operating system redirects you to the file or directory it points to.
 
 To create a symlink, run:
@@ -244,7 +244,9 @@ This creates a symlink in the current working directory that points to /path/to/
 
 To remove a symlink use `rm symlink`. This only removes the symlink and doesn't affect the target file.
 
-## Permissions (Linux)
+### Permissions (Linux)
+Permissions work differently on Windows, however, the MCC cluster is a Linux system. 
+
 Permissions are rules that determine who can access or modify files and directories. 
 
 Types of permissions:

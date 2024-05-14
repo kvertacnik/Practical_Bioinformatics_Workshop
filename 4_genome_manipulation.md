@@ -36,13 +36,14 @@ Fasta sequences start with a header line. The header line starts with `>`, so wh
 ___
 
 ## seqtk installation
-Now, let's download and install the program [seqtk](https://github.com/lh3/seqtk). The README has directions on how to install the program. Do this in your personal folder on the cluster (I suggest making a "programs" folder and installing seqtk in there):
+Now, let's download and install the program [seqtk](https://github.com/lh3/seqtk). The README has directions on how to install the program. Do this in your personal folder on the cluster (If you haven't done so already, I suggest making a "programs" folder and installing seqtk in there):
 ```
 git clone https://github.com/lh3/seqtk.git
 cd seqtk
 ls -l
 make
 ```
+
 If you run `ls -l` again, you should see something like this:
 ```
 [jdu282@mcc-login001 seqtk]$ ls -l
@@ -124,7 +125,7 @@ Give it a try with seqtk. A couple things to NOTE:<br>
 ### bash_profile
 The permanent solution is to add that export path command to a file named `.bash_profile` in your home directory. We will need to generate it manually. The `.` makes the file invisible to keep you from accidentally deleting it. <br>
 1. Create/open your bash_profile file: `nano ~/.bash_profile` <br>
-(tilde `~/` is a nice shortcut for your home directory, so is $HOME; both are shorter than doing /home/user_name/.bash_profile).
+(tilde `~/` is a nice shortcut for your home directory, so is $HOME; both are shorter than doing /home/<user_name>/.bash_profile).
 2. At the bottom of the file add the `export PATH` command that you used before. 
 ```
 export PATH=$PATH:/path/to/your/seqtk/installation/directory/
