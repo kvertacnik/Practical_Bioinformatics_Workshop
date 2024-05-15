@@ -13,7 +13,7 @@ First, download the files we will need from the course data folder on MCC `/pscr
 
 Second, launch your RStudio R project (i.e., click on the .Rproj file)
 <p align="left">
-  <img src="assets/R/RStudio/Rstudio_Rproject_6.png" width="30%">
+  <img src="assets/R/RStudio/RStudio_Rproject_6.png" width="40%">
 </p>
 
 Third, we need to tell R where the files are that we want to read, and we do so by setting the "working directory" or "wd" with `setwd()`, for example `setwd("/Users/julian/Desktop/examples/R_project")`
