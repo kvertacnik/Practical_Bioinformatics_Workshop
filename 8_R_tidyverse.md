@@ -10,8 +10,9 @@ R is a "programming environment for statistics and graphics". One of its strengt
 
 We'll be working in RStudio, an integrated development environment (IDE) that among other things, has places to write and run code.
 <p align="left">
-  <img src="assets/tidyverse/Rstudio.png" width="100%">
+  <img src="assets/R/RStudio/Rstudio.png" width="100%">
 </p>
+
 ___
 
 ## Tidy data with tidyr
@@ -32,8 +33,8 @@ Key to the Tidyverse system is the tidy data format, where:
 * Each value has its own cell.
 
 <p align="left">
-  <img src="assets/tidyverse/tidy_elements_1.png" width="100%">
-  <img src="assets/tidyverse/tidy_elements_2.png" width="100%">
+  <img src="assets/R/tidyverse/tidy_elements_1.png" width="100%">
+  <img src="assets/R/tidyverse/tidy_elements_2.png" width="100%">
 </p>
 
 
@@ -51,7 +52,7 @@ eagle_nest_data <- data.frame(
 print(eagle_nest_data)
 ```
 
-![Untidy data](assets/tidyverse/eagle_untidy.png)
+![Untidy data](assets/R/tidyverse/eagle_untidy.png)
 
 The variables in this dataset are region, year, and nests.
 
@@ -75,9 +76,9 @@ eagle_nest_data %>%             # Step 1
 * Step 3: Make a new column that will store the names of the selected columns.
 * Step 4: Make a new column for the values of the selected columns.
 
-![Methods](assets/tidyverse/eagle_methods.png)
+![Methods](assets/R/tidyverse/eagle_methods.png)
 
-![Tidy data](assets/tidyverse/eagle_tidy.png)
+![Tidy data](assets/R/tidyverse/eagle_tidy.png)
 
 The table now has more rows but each variable (region, year, nests) has a column and each data point has its own row. 
 
@@ -100,15 +101,24 @@ The table now has more rows but each variable (region, year, nests) has a column
 relig_income %>%
   pivot_longer(cols = -religion, names_to = "   ", values_to = "   ")
 ```
-<!--pivot_longer(cols = -religion, names_to = "income", values_to = "frequency")-->
+
+<details>
+<summary>Answer</summary> 
+
+`pivot_longer(cols = -religion, names_to = "income", values_to = "frequency")`
+
+</details>
+
+<br>
+
 ___
 
 ## Data manipulation with dplyr
 
 <p align="left">
-  <img src="assets/tidyverse/penguins_logo.png" width="30%">
+  <img src="assets/R/tidyverse/penguins_logo.png" width="30%">
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-  <img src="assets/tidyverse/penguins_ind.png" width="60%">
+  <img src="assets/R/tidyverse/penguins_ind.png" width="60%">
 </p>
 
 For some reason R logos are hexagon-shaped.
@@ -128,7 +138,7 @@ Run `names(penguins)` to see the column names. To learn more about the variables
 
 FYI
 <p align="left">
-  <img src="assets/tidyverse/penguin_beak.png" width="60%">
+  <img src="assets/R/tidyverse/penguin_beak.png" width="60%">
 </p>
 
 
@@ -156,7 +166,6 @@ The output indicates that on Dream island, the mean body mass for Adelie penguin
 
 ___
 
-
 ## Data visualization with ggplot
  In terms of coding, ggplot has a highly systematic syntax. The ggplot() function is supplemented with other functions that control the objects and appearance of the plot. 
  
@@ -166,7 +175,7 @@ ___
  * Geometry (`geom`)
  
  <p align="left">
-  <img src="assets/tidyverse/ggplot_overview.png" width="100%">
+  <img src="assets/R/tidyverse/ggplot_overview.png" width="100%">
 </p>
 
 <br>
@@ -197,7 +206,7 @@ ggplot(data = penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
 Here we specified which variables to use for our scatter plot. Note that aes() always goes inside another function.
  
  <p align="left">
-  <img src="assets/tidyverse/ggplot_penguins_1.png" width="100%">
+  <img src="assets/R/tidyverse/ggplot_penguins_1.png" width="100%">
 </p>
 
 We know that the data observations include species; that's information that we can feature in the plot.
@@ -210,7 +219,7 @@ ggplot(data = penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
 By default, a legend is created when objects are connected to data.
 
  <p align="left">
-  <img src="assets/tidyverse/ggplot_penguins_2.png" width="100%">
+  <img src="assets/R/tidyverse/ggplot_penguins_2.png" width="100%">
 </p>
 
 
@@ -222,7 +231,7 @@ ggplot(data = penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
 ```
 
  <p align="left">
-  <img src="assets/tidyverse/ggplot_penguins_3.png" width="100%">
+  <img src="assets/R/tidyverse/ggplot_penguins_3.png" width="100%">
 </p>
 
 Hmm, I don't like these colors. Let's change them.
@@ -232,7 +241,7 @@ ggplot(data = penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
   scale_color_manual(values = c("darkorange","purple","cyan4"))
 ```
  <p align="left">
-  <img src="assets/tidyverse/ggplot_penguins_4.png" width="100%">
+  <img src="assets/R/tidyverse/ggplot_penguins_4.png" width="100%">
 </p>
 
 
@@ -249,7 +258,7 @@ ggplot(data = penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
     shape = "Penguin species")
   ```
  <p align="left">
-  <img src="assets/tidyverse/ggplot_penguins_5.png" width="100%">
+  <img src="assets/R/tidyverse/ggplot_penguins_5.png" width="100%">
 </p>
 
 
@@ -268,14 +277,28 @@ ggplot(data = penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
   theme_minimal()
   ```
  <p align="left">
-  <img src="assets/tidyverse/ggplot_penguins_6.png" width="100%">
+  <img src="assets/R/tidyverse/ggplot_penguins_6.png" width="100%">
 </p>
 
 Note that there are [many other ggplot functions](https://rstudio.github.io/cheatsheets/html/data-visualization.html) besides `geom()` and `aes()`. We called `scale_color_manual()` to change the point colors and `labs()` to add plot labels. Almost every aspect of a plot can be edited.
 
 <br>
 
-To demonstrate the flexibility of ggplot, let's make a different figure. Note how similar the code from the last plot is with this one:
+Now you try to recreate this figure. You can use a lot of the same code from the last plot. (Hint: search online for how to make a bar plot in ggplot)
+
+ <p align="left">
+  <img src="assets/R/tidyverse/ggplot_penguins_7.png" width="100%">
+</p>
+
+```
+species_count_data <- penguins %>% count(species)
+
+ggplot(data = species_count_data, aes(x = species, y = n)) +
+  <you fill in the rest>
+```
+ 
+<details>
+<summary>Answer</summary> 
 
 ```
 species_count_data <- penguins %>% count(species)
@@ -287,7 +310,13 @@ ggplot(data = species_count_data, aes(x = species, y = n)) +
   labs(title = 'Penguins Species & Count') +
   theme_minimal()
   ```
- 
- <p align="left">
-  <img src="assets/tidyverse/ggplot_penguins_7.png" width="100%">
-</p>
+
+</details>
+
+<br>
+
+___
+
+## The bare minimum to remember
+* Tidy data
+* ggplot
