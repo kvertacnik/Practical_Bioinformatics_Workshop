@@ -336,7 +336,7 @@ ___
 
 ## 8. GATK GenotypeGVCFs and 9. Merging VCFs
 Step 9 requires an input file that basically tells gatk where to find the scaffold-specific `vcf` files, which I call `seq.path.list`. Because we are consistent with our file naming, we can list the path to the output of step 8 even before running step 8.
-1. In your dorsalis_WGS folder run the following to create your `list.sample_map`
+1. In your dorsalis_WGS folder run the following to create your `seq.path.list`
 ```
 for i in {1..6}; do echo "/path/to/your/8_genotypeGVCFs/folder/Chromosome"$i".vcf.gz" >> seq.path.list; done
 ```
