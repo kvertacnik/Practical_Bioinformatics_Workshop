@@ -2,7 +2,7 @@
 
 ## Getting started
 
-First, download the files we will need from the course data folder on MCC `/pscratch/kdu224_iceland_bootcamps2024/data` to your R_project folder (on your local computer). Hint: use `scp` to either download the entire folder or use wildcards to get files with similar names.
+First, download the files we will need from the course data folder on MCC `/pscratch/kdu224_iceland_bootcamps2024/data` to your R_project folder on your local computer. Hint: use `scp` with wildcards to get files with similar names.
 * 9_merged_0miss_minDP2_100ind_5245snps.vcf
 * 9_merged_0.5miss_minDP1_100ind_257618snps.vcf
 * Bdor_populations.sed
