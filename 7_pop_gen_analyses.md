@@ -2,7 +2,7 @@
 
 ## Getting started
 
-First, download the files we will need from the course data folder on MCC `/pscratch/kdu224_iceland_bootcamps2024/data` to your R_project folder on your local computer. Hint: use `scp` with wildcards to get files with similar names.
+First, download the files we will need from the course data folder on MCC `/pscratch/kdu224_iceland_bootcamps2024/data` to your R_project folder on your local computer. Hint: use `scp` with a wildcard `*`
 * 9_merged_0miss_minDP2_100ind_5245snps.vcf
 * 9_merged_0.5miss_minDP1_100ind_257618snps.vcf
 * Bdor_populations.sed
@@ -98,7 +98,7 @@ Adegenet has a `read.structure()` function to read in our STRUCTURE file.
 1. Run `swallowtail_data <- read.structure("swallowtail_ABBC_781ind_10microsat.str")`
 2. The read.structure() function has lots of options to specify, but if you don't supply any options it will actually walk you through some of these options. See if you can answer the questions that read.structure is asking you.
 3. Press control + c to cancel this process.
-4. Alternatively, it's a little quicker to just specify that info in the function options.
+4. We can also just specify that info in the function options.
     ```
     swallowtail_data <- read.structure("swallowtail_ABBC_781ind_10microsat.str", n.ind=781, n.loc=10, onerowperind=T,  row.marknames=NULL, col.lab=1, col.pop=2, NA.char="-9", ask=F)
    ```
@@ -255,7 +255,6 @@ s.label(pca1$li)
 
 # And let's add the eigenvalue info to the plot
 add.scatter.eig(pca1$eig[1:20], 3,1,2)
-
 ```
 
 So the PC values themselves are basically just where individuals are falling along the axes of variation for each PC. So you can basically treat pairs of those PC values as X,Y coordinates (that's what plotted in the plot). You can even look at different pairs than just PC1 and PC2:
