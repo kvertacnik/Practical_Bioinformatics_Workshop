@@ -330,7 +330,7 @@ done
 You can see in that first for loop, we're indexing each `g.vcf` file (this could be done as a separate step or after the code in the previous step), and then in the second for loop (this one not in 1-line format and with some extra `echo`'s) we're creating the databases for each scaffold. 
 
 
-**Finally, make a copy of your `list.sample_map` file and place it in `/pscratch/kdu224_iceland_bootcamps2024/sample_maps`. I will create a final VCF file that has everyone's samples for us to look at.**
+**Finally, make a copy of your `list.sample_map` file named `<your name_>.list.sample_map`. Move the file to `/pscratch/kdu224_iceland_bootcamps2024/sample_maps`. I will create a final VCF file that has everyone's samples for us to look at.**
 
 ___
 
