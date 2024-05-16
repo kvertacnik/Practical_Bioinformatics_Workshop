@@ -371,10 +371,19 @@ We will use `vcftools` to calculate Fst. To do this, vcftools determines the all
 
 We installed vcftools on the the computing cluster when we did the genotyping pipeline. Submit the following command as a job on MCC (set `#SBATCH --ntasks=1`):
 ```
-vcftools --vcf 9_merged_0miss_minDP2_100ind_5245snps.vcf --weir-fst-pop Bdor_africa_sample_list.txt --weir-fst-pop Bdor_asia_sample_list.txt --out 9_merged_0miss_minDP2_100ind_5245snps
+#!/bin/bash
+#SBATCH --time 2:00:00     
+#SBATCH --nodes=1        
+#SBATCH --ntasks=1      
+#SBATCH --account=cea_kdu224_iceland_bootcamps2024
+#SBATCH --partition=normal
+#SBATCH --mail-type ALL    
+#SBATCH --mail-user kim.vertacnik@uky.edu
+
+vcftools --vcf /pscratch/kdu224_iceland_bootcamps2024/data/9_merged_0miss_minDP2_100ind_5245snps.vcf --weir-fst-pop /pscratch/kdu224_iceland_bootcamps2024/data/Bdor_africa_sample_list.txt --weir-fst-pop /pscratch/kdu224_iceland_bootcamps2024/data/Bdor_asia_sample_list.txt --out 9_merged_0miss_minDP2_100ind_5245snps
 ```
 
-After the job is completed, the end of the slurm file should have something like this:
+After the job is completed, you should have a file named `9_merged_0miss_minDP2_100ind_5245snps.weir.fst` and the end of the slurm file should have something like this:
 ```
 After filtering, kept 100 out of 100 Individuals
 Outputting Weir and Cockerham Fst estimates.
@@ -382,6 +391,8 @@ Weir and Cockerham mean Fst estimate: 0.021124
 Weir and Cockerham weighted Fst estimate: 0.06383
 After filtering, kept 5245 out of a possible 5245 Sites
 ```
+
+Download `9_merged_0miss_minDP2_100ind_5245snps.weir.fst` to your RStudio working folder.
 
 Now that we have locus Fst values, lets make a Manhattan plot, which plots the loci in order along the genome.
 
