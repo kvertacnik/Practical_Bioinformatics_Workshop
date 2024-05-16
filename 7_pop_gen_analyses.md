@@ -143,7 +143,7 @@ swallowtail_data@strata    # Now @strata has the data found in @other
 
 Alternatively, we could skip loading data into @other and read it directly into @strata. 
 ```
-strata(swallowtail_data) <- swallowtail_strata[,2:3]
+strata(swallowtail_data) <- swallowtail_strata
 ```
 
 Also, we can read in specific columns into strata. We can set the strata by referring to the columns in @other (pop and region). Remember the square brackets allow us to refer to rows and columns (in that order) within a dataframe, so pop and pop_name are columns 2 and 3, and we can apply both by using a colon (i.e. take columns 2 to 3 from swallowtail_strata and set them as strata).
@@ -189,6 +189,7 @@ sum(is.na(swallowtail_data$tab))
 swallowtail_data_alleles_noNA <- tab(swallowtail_data, freq = TRUE, NA.method = "mean")
 
 # Now the dataset should not have missing data
+# Skip this--I need to fix it . The point is to show you removed all NA values
 sum(is.na(swallowtail_data_alleles_noNA$tab))
 ```
 
