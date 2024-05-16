@@ -329,7 +329,6 @@ done
 
 You can see in that first for loop, we're indexing each `g.vcf` file (this could be done as a separate step or after the code in the previous step), and then in the second for loop (this one not in 1-line format and with some extra `echo`'s) we're creating the databases for each scaffold. 
 
-
 **Finally, make a copy of your `list.sample_map` file named `<your name_>.list.sample_map`. Move the file to `/pscratch/kdu224_iceland_bootcamps2024/sample_maps`. I will create a final VCF file that has everyone's samples for us to look at.**
 
 ___
@@ -374,6 +373,16 @@ gatk MergeVcfs I=seq.path.list O=9_merged.vcf.gz
 ```
 
 The final output is called `9_merged.vcf.gz`, and for a real dataset, this can be a big file (tens to hundreds of Gb). 
+
+Troubleshooting: If step 8 errors quickly and your email says “Exit code 3”. Go back to step 7.
+1. Check the end of the job 7 job .err file. Do you see something like this?
+   ```
+   slurmstepd: error: Detected 5 oom-kill event(s) in StepId=22067843.batch cgroup. Some of your processes may have been killed by the cgroup out-of-memory handler.
+   ```
+2. If so, change your step 7 job script by changing the amount of allocated memory.
+  * Increase the total memory per node `#SBATCH --mem=64g`
+  * Increase the maximum memory allowed for Java `--java-options "-Xmx64g -Xms48g"`
+3. Rerun step 7 before trying step 8 again.
 
 ___
 
