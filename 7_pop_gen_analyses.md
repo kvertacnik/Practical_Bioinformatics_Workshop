@@ -418,12 +418,12 @@ fst_noNA <- na.omit(fst)
 # Add snp column. 
 # Because this data does not include snp name, we will add dummy names.
 # We do this by assigning a number to each snp.
-length_ <- dim(fst)[1]
+length_ <- dim(fst_noNA)[1]
 length_
-fst$SNP <- paste('SNP',1:length_)
+fst_noNA$SNP <- paste('SNP',1:length_)
 
 # Generate the manhattan plot
-manhattan(fst,chr='CHROM',bp='POS',
+manhattan(fst_noNA,chr='CHROM',bp='POS',
           p="WEIR_AND_COCKERHAM_FST",snp='SNP',
           logp=FALSE,ylab='WEIR AND COCKERHAM_FST',xlab='CHR')
 ```
@@ -477,7 +477,7 @@ manhattan(fst,chr='CHROM',bp='POS',
 
 ___
 
-## Extra:How to convert from VCF to STRUCTURE format
+## Extra: How to convert from VCF to STRUCTURE format
 
 Download our VCF file `9_merged_0miss_minDP2_100ind_5245snps.vcf`
 
