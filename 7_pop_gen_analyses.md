@@ -400,7 +400,7 @@ Download the .weir.fst file to your R Project folder.
 
 First we need to rename chromosomes to numbers. On your local computer run:
 ```
-sed 's/Chromosome//g' 9_merged_0miss_minDP2_100ind_5245snps_WC_Fst.weir.fst > 9_merged_0miss_minDP2_100ind_5245snps_WC_Fst.weir.fst.edited
+sed 's/Chromosome//g' 9_merged_0miss_minDP2_100ind_5245snps.weir.fst > 9_merged_0miss_minDP2_100ind_5245snps.weir.fst.edited
 ```
 
 Then in RStudio, run:
