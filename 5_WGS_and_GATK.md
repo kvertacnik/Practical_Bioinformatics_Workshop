@@ -438,6 +438,8 @@ After filtering, kept 5245 out of a possible 25690005 Sites
 
 Another common filtering step is to remove individuals with excessive missing data. We won't do that here but check out the `--missing-indv` option in the [vcftools manual](https://vcftools.sourceforge.net/man_latest.html).
 
+Of course, when filtering your own data, check that you are using the appropriate options.
+
 This is the end of our pipeline. The final product is your filtered VCF file `9_merged_0miss_minDP2.recode.vcf`
 
 NB: Because I forget things a lot, I find it helpful to include the number of individuals and snps in the vcf file name, e.g., 9_merged_100ind_5245snps_0miss_minDP2.vcf
