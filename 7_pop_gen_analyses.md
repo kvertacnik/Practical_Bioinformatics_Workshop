@@ -297,7 +297,7 @@ latlong_unique <- unique(latlong)
 # Calculate a geographic distance from those lat longs
 library(geosphere)
 library(sna)
-geoD_temp1 <- distm(latlong_unique[c('lat','long')],fun=distVincentyEllipsoid) 
+geoD_temp1 <- distm(latlong_unique[c('long','lat')],fun=distVincentyEllipsoid) 
 # Convert from meters to kilometers
 geoD_temp2 <- geoD_temp1/1000 
 
