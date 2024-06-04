@@ -289,15 +289,15 @@ setPop(swallowtail_data) <- ~ pop
 genD <- genet.dist(swallowtail_data, method = "Fst") 
 
 # Access lat long coordinates from @other
-latlong <- swallowtail_strata[c('lat','long')] 
+longlat <- swallowtail_strata[c('long','lat')] 
 
 # Remove duplicates (since we're calculating distances for pairs of populations, not individuals)
-latlong_unique <- unique(latlong) 
+longlat_unique <- unique(longlat) 
 
 # Calculate a geographic distance from those lat longs
 library(geosphere)
 library(sna)
-geoD_temp1 <- distm(latlong_unique[c('long','lat')],fun=distVincentyEllipsoid) 
+geoD_temp1 <- distm(longlat_unique[c('long','lat')],fun=distVincentyEllipsoid) 
 # Convert from meters to kilometers
 geoD_temp2 <- geoD_temp1/1000 
 
