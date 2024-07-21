@@ -424,9 +424,7 @@ In the following figures, the Puechmaille statistics show high support for both 
 
 <br>
 
-___
-
-## Q-Matrix visualization (barplots)
+### Q-Matrix visualization (barplots)
 Bar Plot components:
 * Individuals as Bars.
   * In the bar plot, each individual is represented by a single bar (column).
