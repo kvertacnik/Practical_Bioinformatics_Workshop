@@ -1,5 +1,5 @@
 # Determining population structure with STRUCTURE
-STRUCTURE uses allele frequency data and Bayesian clustering models to probabilistically assign individuals to populations/genetic clusters, where populations are characterized by a set of allele frequencies at each locus. Individuals can have mixed ancestry from multiple populations (admixture), and STRUCTURE will estimate the genomic proportion that originates from each population. Unlike [ADMIXTURE](https://dalexander.github.io/admixture/index.html), known (prior) information about individual location or population of origin can be included in the analysis.
+STRUCTURE uses allele frequency data and Bayesian clustering models to probabilistically assign individuals to populations/genetic clusters. Populations are characterized by a set of allele frequencies at each locus. Individuals can have mixed ancestry from multiple populations (admixture), and STRUCTURE will estimate the genomic proportion that originates from each population. Unlike [ADMIXTURE](https://dalexander.github.io/admixture/index.html), known (prior) information about individual location or population of origin can be included in the analysis.
 
 The goal is to infer the most likely number of populations `K` that explain the observed genetic variation. STRUCTURE estimates the posterior probability for different values of K; these are compared to determine the smallest K value that captures the data's structural patterns.
 
@@ -377,14 +377,14 @@ Once you have subset of K values to further test, rerun StructureSelector:
 4. Press `Run`
 
 <p align="left">
-  <img src="assets/structure/StructureSelector_settings_puechmaille.png" width="75%">
+  <img src="assets/structure/StructureSelector_settings_puechmaille.png" width="50%">
 </p>
 
 The Puechmaille statistics account for uneven sampling across populations. With the delta K statistic, "uneven sample size between subpopulations and/or hierarchical levels of population ... often leads to wrong inferences on hierarchical structure and downward-biased estimates of the true number of subpopulations." [Puechmaille (2016)](https://onlinelibrary.wiley.com/doi/abs/10.1111/1755-0998.12512). 
 
 The plots should be plateau-shaped. To determine K, I look for where the plateau occurs on the y-axis AND if it matches up to the same value in the x-axis (the math for this is complicated). 
 <p align="left">
-  <img src="assets/structure/Puechmaille_example.png" width="50%">
+  <img src="assets/structure/Puechmaille_example.png" width="100%">
 </p>
 
 * A. I would not evaluate for K
@@ -395,7 +395,7 @@ The plots should be plateau-shaped. To determine K, I look for where the plateau
 
 Multiple threshold values are tested to check for concordance. K values that vary across threshold values indicate a lack of population structure. --> check if true <--
 
-In the following figures, the Puechmaille statistics show high support for both K=4 and K=5.
+In the following figures, the Puechmaille statistics show high support for both K=4 and K=5. In threshold = 0.9, so few individuals are being assigned to clusters that there isn't population differentiation across K values --> check if true <--
 
 #### 0.5
 <p align="left">
