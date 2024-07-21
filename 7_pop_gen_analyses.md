@@ -363,7 +363,7 @@ We will use `vcftools` to calculate Fst. To do this, vcftools determines the all
     #SBATCH --account=cea_kdu224_iceland_bootcamps2024
     #SBATCH --partition=normal
     #SBATCH --mail-type ALL    
-    #SBATCH --mail-user kim.vertacnik@uky.edu
+    #SBATCH --mail-user <your email address>
 
     vcftools --vcf /pscratch/kdu224_iceland_bootcamps2024/data/9_merged_0miss_minDP2_100ind_5245snps.vcf --weir-fst-pop /pscratch/kdu224_iceland_bootcamps2024/data/Bdor_africa_sample_list.txt --weir-fst-pop /pscratch/kdu224_iceland_bootcamps2024/data/Bdor_asia_sample_list.txt --out 9_merged_0miss_minDP2_100ind_5245snps
     ```

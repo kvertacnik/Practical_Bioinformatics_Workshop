@@ -356,9 +356,6 @@ Here's what the job submission script looks like. The location option in the `-V
     gatk --java-options "-Xmx48g" GenotypeGVCFs -R ./genome.fasta -V gendb://7_GenomicsDBImport_out/$f.db -O ./8_genotypeGVCFs/$f.vcf.gz 
     echo "Finishing $f"
     done
-
-    # Merging VCFs (step 9)
-    gatk MergeVcfs I=seq.path.list O=9_merged.vcf.gz
     ```
 
 ___
