@@ -271,7 +271,7 @@ module load ccs/conda/structure-2.3.4
 ```
 
 ### structure.sh
-Second, we have a bash script that combines the header file with the STRUCTURE command and arguments. This is where we set the range of K values to test (`for k in ...`) and the number of replicates for each K value (`for r in ...`).
+Second, we have a bash script that combines the header file with the STRUCTURE command and arguments. This is where we set the range of K values to test (`for k in ...`) and the number of replicates for each K value (`for r in ...`). Note, that we're also specifying some options that also show up in the mainparams file; when we specify an option in the command, it'll override whatever is present in the mainparams file. We're also utilizing the seed (-D) option to specify a random number (using the system variable $RANDOM) as the seed for each replicate. $RANDOM bases its number on the current time in the system, so we utilize a `sleep` command to make sure we don't call the same random number by submitting two jobs essentially at the same time. 
 
 ```
 qsub_folder=qsubs
@@ -312,7 +312,7 @@ We will use [StructureSelector](https://onlinelibrary.wiley.com/doi/abs/10.1111/
 1. The `StructureResults` folder has the STRUCTURE output files for all K values and replicates. Go into that folder and make a zip file (not a gzip tarball) that contains all the output files.
 2. Go to https://lmme.ac.cn/StructureSelector/ 
 3. Upload the zip file and PopMap file (if prior population data was used in the STRUCTURE analysis).
-  * To make a PopMap file, get column 2 of the STRUCTURE input file and make a new file.
+  * A PopMap file is a 2 column file with column 1 corresponding to the individual specimen identifier and column 2 its population/locality of origin (generally columns 1 and 2 of the .str file if it is formatted as one-row-per-individual).
     * Regardless of how you make the PopMap file, make sure that the sample order matches that of the STRUCTURE input file.
 4. Select `Also Run CLUMPAK`
 5. Press `Run`
@@ -320,7 +320,7 @@ We will use [StructureSelector](https://onlinelibrary.wiley.com/doi/abs/10.1111/
 <br>
 
 [CLUMPAK](https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.12387) creates Q-matrix plots.
-* In the STRUCTURE output, the order of the infered populations/genetic clusters is not consistent across multiple analyses, so CLUMPAK aligns these clusters to make the plots comparable.
+* In the STRUCTURE output, the order of the inferred populations/genetic clusters is not consistent across multiple analyses (i.e., population 1 in iteration 1 might be called population 2 in iteration 2), so CLUMPAK aligns these clusters to make the plots comparable.
 
 * For each value of K, it averages the replicate runs to generate major and minor clustering solutions.
 
@@ -343,7 +343,7 @@ The delta K values should be at least in the thousands (preferably tens of thous
   <img src="assets/structure/DeltaK_plot.png" width="60%">
 </p>
 
-The figure suggests K=2 but there is a preferential bias towards K=2 (Janes et al. 2017), so in this example I would consider K=2 through K=5. The slightly elevated delta K for K=5 suggests the presense of minor population structure.
+The figure suggests K=2 but there is a preferential bias towards K=2 (Janes et al. 2017), so in this example I would consider K=2 through K=5. The slightly elevated delta K for K=5  (and K=3) suggests the presense of minor population structure.
 
 Limitations of delta K:
 * It is "more likely to identify the uppermost level of hierarchical population structure, thus will lead to underestimating of structure." [Li and Liu (2018)](https://onlinelibrary.wiley.com/doi/abs/10.1111/1755-0998.12719)
@@ -353,7 +353,7 @@ Limitations of delta K:
 <br>
 
 ### LnP(K) (likelihood)
-This is the log of the likelihood of the data given a specific number of populations.
+This is the log of the likelihood of the data given a specific number of populations and was the original method of finding the best K in (Pritchard et al. 2000)[https://academic.oup.com/genetics/article/155/2/945/6048111].
 
 The plot should be a plateau-shaped like this, and K is where the plot starts to create a plateau of values (shown in red):
 <p align="left">
@@ -444,8 +444,8 @@ Interpreting the Bar Plot:
    * The proportions of different colors indicate the degree of admixture.
 
 * Population Structure:
-  * Clear boundaries between color segments in the bars of different groups indicate distinct population structures.
-  * Gradual changes in colors across groups suggest gradual genetic differentiation or gene flow between populations.
+  * Clear boundaries between color segments in the bars of different groups indicate distinct population structure.
+  * Gradual changes in colors across groups suggest gradual genetic differentiation (genetic clines) and/or gene flow between populations.
 
 
 In the StructureSelector output files, look for a file named something like "job_1718301549_pipeline_summary.pdf".
